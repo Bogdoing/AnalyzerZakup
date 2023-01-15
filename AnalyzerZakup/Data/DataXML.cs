@@ -43,6 +43,11 @@ namespace AnalyzerZakup.Data
         public static string applicationInfo_appNumber { get; set; }
         public static string applicationInfo_appDT { get; set; }
         public static string applicationInfo_finalPrice { get; set; }
+
+        public static float strTofloat()
+        {
+            return float.Parse(applicationInfo_finalPrice.Replace(".", ","));
+        }
     }
 
 }

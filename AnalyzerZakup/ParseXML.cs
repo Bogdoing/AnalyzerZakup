@@ -42,12 +42,13 @@ namespace AnalyzerZakup
             string[] fileEntriesAll = Directory.GetFiles(DataApp.TxtBoxfilepath);
             string[] fileEntriesProtocol = Directory.GetFiles(DataApp.TxtBoxfilepath, "epProtocol*");
             MessageBox.Show("Parsing" + fileEntriesProtocol);
+            // IEOK
 
-            // Parse epProtocol
+            // Parse epProtocol IEF
             for (int i = 1; i < fileEntriesProtocol.Length; i++) // !!! i = 0 !!!
             {
                 Parse_Protocol(fileEntriesProtocol[i]);
-                //MessageBox.Show("Parsing" + fileEntriesProtocol[i]);   
+                MessageBox.Show("Parsing" + fileEntriesProtocol[i]);   
             }
             MessageBox.Show("End parsing all");
         }
@@ -257,13 +258,13 @@ namespace AnalyzerZakup
                 var cnt_appNumber = docXML.DocumentElement.SelectNodes(
                         "//ns9:applicationsInfo/ns9:applicationInfo/ns9:commonInfo/ns9:appNumber",
                         _namespaceManager)
-                        .Count.ToString();
+                        .Count;
                 //MessageBox.Show(cnt_appNumber);
-                if (cnt_appNumber != "0")
+                if (cnt_appNumber != 0)
                 {
                     _applicationInfo_appNumber = docXML.DocumentElement.SelectNodes(
                             "//ns9:applicationsInfo/ns9:applicationInfo/ns9:commonInfo/ns9:appNumber",
-                            _namespaceManager)[0]
+                            _namespaceManager)[cnt_appNumber-1]
                             .InnerText;
                     _applicationInfo_appDT = docXML.DocumentElement.SelectNodes(
                             "//ns9:applicationsInfo/ns9:applicationInfo/ns9:commonInfo/ns9:appDT",
@@ -276,7 +277,6 @@ namespace AnalyzerZakup
                             .Count.ToString();
                     if (cnt_final_Prise == "0")
                     {
-
                         ApplicationInfo.applicationInfo_finalPrice = "0";
                     }
                     else
@@ -297,33 +297,30 @@ namespace AnalyzerZakup
 
                 //MessageBox.Show("add db applicationInfo| " + _applicationInfo_appNumber + "|" + _applicationInfo_appDT + "|" + ApplicationInfo.applicationInfo_finalPrice);
 
-                ////string query = "INSERT INTO sport (surname,kind_sport,place,id_country) VALUES (@surname,@kind_sport,@place, @id_country)";
-                //string query = @"insert into applicationInfo (appNumber, appDT, finalPrice) 
-	               //             values 
-	               //             (@appNumber, @appDT, @finalPrice)";
-                ////query = @"insert into test (name) 
-                ////        values
-                ////        (@name)"; 
-                //try
-                //{
-                //    using (SqlConnection connection = new SqlConnection(connectionString))
-                //    {
-                //        SqlCommand command = new SqlCommand(query, connection);
-                //        command.Connection.Open();
+                //string query = "INSERT INTO sport (surname,kind_sport,place,id_country) VALUES (@surname,@kind_sport,@place, @id_country)";
+                string query = @"insert into applicationInfo (appNumber, appDT, finalPrice) 
+	                            values 
+	                            (@appNumber, @appDT, @finalPrice)"; 
+                try
+                {
+                    using (SqlConnection connection = new SqlConnection(connectionString))
+                    {
+                        SqlCommand command = new SqlCommand(query, connection);
+                        command.Connection.Open();
 
-                //        command.Parameters.AddWithValue("@appNumber", int.Parse(_applicationInfo_appNumber));
-                //        command.Parameters.AddWithValue("@appDT", DateTime.Parse(_applicationInfo_appDT));
-                //        command.Parameters.AddWithValue("@finalPrice", float.Parse(ApplicationInfo.applicationInfo_finalPrice));
-                //        int result = command.ExecuteNonQuery();
+                        command.Parameters.AddWithValue("@appNumber",   int.Parse(_applicationInfo_appNumber));
+                        command.Parameters.AddWithValue("@appDT",       DateTime.Parse(_applicationInfo_appDT));
+                        command.Parameters.AddWithValue("@finalPrice",  ApplicationInfo.strTofloat());
+                        int result = command.ExecuteNonQuery();
 
-                //        if (result < 0)
-                //            MessageBox.Show("Ошибка добавления строки в базу данных! " + result.ToString());
-                //    }
-                //}
-                //catch (Exception ex)
-                //{
-                //    MessageBox.Show(ex.Message, "error", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                //}
+                        if (result < 0)
+                            MessageBox.Show("Ошибка добавления строки в базу данных! " + result.ToString());
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message, "error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
             }
             catch (Exception ex)
             {
