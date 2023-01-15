@@ -48,7 +48,7 @@ namespace ZakupAnaliser
             //axml.xml_analyse(DataApp.TxtBoxfilepath, textBox1, dateTimePicker1.Value);
             //Thread.Sleep(20000);
             ParseXML parseXML = new ParseXML();
-            parseXML.Parse_test();
+            parseXML.Parse_XML();
 
             UpZip.delXML();
             //parseXML.Parse_ProtocolEF();

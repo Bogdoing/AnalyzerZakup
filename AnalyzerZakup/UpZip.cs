@@ -43,7 +43,7 @@ namespace AnalyzerZakup
         public static void delFile()
         {
             //delXML();
-            delZIP();
+            //delZIP();
             delSig();
             delFcs();
         }
