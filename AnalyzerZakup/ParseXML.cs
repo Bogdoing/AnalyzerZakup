@@ -48,7 +48,8 @@ namespace AnalyzerZakup
             for (int i = 1; i < fileEntriesProtocol.Length; i++) // !!! i = 0 !!!
             {
                 Parse_Protocol(fileEntriesProtocol[i]);
-                //MessageBox.Show("Parsing" + fileEntriesProtocol[i]);   
+
+                MessageBox.Show("Parsing" + fileEntriesProtocol[i]);   
             }
             MessageBox.Show("End parsing all");
         }
@@ -57,13 +58,28 @@ namespace AnalyzerZakup
         {
             XmlDocument docXML = new XmlDocument(); // XML-документ
             docXML.Load(fileEntries); // загрузить XML
-            
+
+            string _fileName = "count.txt";
+            int count = 1;
+
+            if (File.Exists(_fileName))
+            {
+                count = int.Parse(File.ReadAllText(_fileName));  // int.Parse(string)
+            }
+            //File.ReadAllText(_fileName);
+
+
             DataXML dataXML = new DataXML();
             ProtocolInfo protocolInfo = new ProtocolInfo();
             CommonInfo common_Info = new CommonInfo();
             ProtocolPublisherInfo protocolPublisherInfo = new ProtocolPublisherInfo();
             CommissionMembers commissionMembers = new CommissionMembers();
             ApplicationInfo applicationInfo = new ApplicationInfo();
+
+            protocolInfo.id = count;
+            count++;
+            File.WriteAllText(_fileName, count + "");
+            MessageBox.Show(protocolInfo.id + "");
             //XmlTextReader reader = new XmlTextReader(fileEntries[i]);
             //XmlNamespaceManager nsmanager = new XmlNamespaceManager(reader.NameTable);
             // инициализация пространства имён
@@ -85,24 +101,31 @@ namespace AnalyzerZakup
 
             try
             {
-                //if (fileEntries[i].StartsWith("f")) // (person.ToUpper().StartsWith("T"))
-                //{
-                //    MessageBox.Show("f - " + fileEntries[i]);
-                //}
-                //MessageBox.Show("any file - " + fileEntries[i]);
-                //var _id = docXML.DocumentElement.SelectNodes("//ns9:id", _namespaceManager)[0].InnerText;
+                var cnt_commissionname = docXML.DocumentElement.SelectNodes(
+                "//ns9:commissionInfo/ns3:commissionName",
+                _namespaceManager).Count;
+                if (cnt_commissionname != 0)
+                    protocolInfo.commissionName = docXML.DocumentElement.SelectNodes(
+                    "//ns9:commissionInfo/ns3:commissionName",
+                    _namespaceManager)[0]
+                    .InnerText;
+                else protocolInfo.commissionName = "Отсутствует";
+                string db_commissionName = @"insert into protocolInfo (commissionName ) values (@commissionName)";
+                try
+                {
+                    using (SqlConnection connection = new SqlConnection(connectionString))
+                    {
+                        SqlCommand command = new SqlCommand(db_commissionName, connection);
+                        command.Connection.Open();
+                        command.Parameters.AddWithValue("@commissionName", protocolInfo.commissionName);
+                        int result = command.ExecuteNonQuery();
+                        if (result < 0) MessageBox.Show("Ошибка добавления строки в базу данных! " + result.ToString());
+                    }
+                }
+                catch (Exception ex) { MessageBox.Show(ex.Message, "error", MessageBoxButtons.OK, MessageBoxIcon.Information); }
 
-                //var _foundationDocNumber = docXML.DocumentElement.SelectNodes(
-                //    "//ns9:foundationDocInfo/ns9:foundationDocNumber",
-                //    _namespaceManager)[0]
-                //    .InnerText;
 
-                // commonInfo all
-                //common_Info.commonInfo = docXML.DocumentElement.SelectNodes(
-                //    "//ns9:commonInfo",
-                //    _namespaceManager)[0]
-                //    .InnerText;
-
+                #region CommonInfo
                 common_Info.commonInfo_purchaseNumber = docXML.DocumentElement.SelectNodes(
                     "//ns9:commonInfo/ns9:purchaseNumber",
                     _namespaceManager)[0]
@@ -118,6 +141,8 @@ namespace AnalyzerZakup
                     _namespaceManager)[0]
                     .InnerText;
                 //MessageBox.Show(_commonInfo_purchaseNumber + " " + _commonInfo_docNumber + " " + _commonInfo_publishDTInEIS);
+                #endregion
+
                 #region dbAddCommonInfo
                 string db_commonInfo = @"insert into commonInfo(purchaseNumber, docNumber, docPublishDTInEIS)
                 values
@@ -144,6 +169,8 @@ namespace AnalyzerZakup
                 }
                 #endregion
                 // c close
+
+                #region protocolPublisherInfo
                 // protocolPublisherInfo all
                 protocolPublisherInfo.protocol_regNum = docXML.DocumentElement.SelectNodes(
                     "//ns9:protocolPublisherInfo/ns9:publisherOrg/ns9:regNum",
@@ -166,6 +193,8 @@ namespace AnalyzerZakup
                     _namespaceManager)[0]
                     .InnerText;
                 // p close
+                #endregion
+
                 #region dbAddprotocolPublisherInfo
                 string db_protocolPublisherInfoo = @"insert into protocolPublisherInfo(regNum, fullName, factAddress, INN, KPP)
                             values
@@ -193,6 +222,7 @@ namespace AnalyzerZakup
                 }
                 #endregion
 
+                #region applicationInfo
                 // add DB applicationInfo
                 string _applicationInfo_appNumber;
                 string _applicationInfo_appDT;
@@ -238,6 +268,7 @@ namespace AnalyzerZakup
                 }
 
                 //MessageBox.Show("add db applicationInfo| " + _applicationInfo_appNumber + "|" + _applicationInfo_appDT + "|" + ApplicationInfo.applicationInfo_finalPrice);
+                #endregion
 
                 #region dbApplicationInfo
                 string query = @"insert into applicationInfo (appNumber, appDT, finalPrice) 
@@ -265,6 +296,7 @@ namespace AnalyzerZakup
                 }
                 #endregion
 
+                #region commissionMembers
                 // commissionMembers all
                 var commissionMember = docXML.DocumentElement.SelectNodes(
                     "//ns3:commissionMembers/ns3:commissionMember",
@@ -302,9 +334,9 @@ namespace AnalyzerZakup
                     //MessageBox.Show("Parse commissionMember" + j);
                     #region dbAddcommissionMembers
                     string db_commissionMembers =
-                        @"insert into commissionMember (memberNumber, lastName, firstName, middleName, commision_role) 
+                        @"insert into commissionMember (memberNumber, lastName, firstName, middleName, commissionRole, protocolInfo_id) 
 	                        values 
-	                        (@memberNumber, @lastName, @firstName, @middleName,	@commision_role)";
+	                        (@memberNumber, @lastName, @firstName, @middleName,	@commissionRole, @protocolInfo_id)";
                     try
                     {
                         using (SqlConnection connection = new SqlConnection(connectionString))
@@ -316,7 +348,8 @@ namespace AnalyzerZakup
                             command.Parameters.AddWithValue("@lastName",        commissionMembers.commissionMember_lastName);
                             command.Parameters.AddWithValue("@firstName",       commissionMembers.commissionMember_firstName);
                             command.Parameters.AddWithValue("@middleName",      commissionMembers.commissionMember_middleName);
-                            command.Parameters.AddWithValue("@commision_role",  commissionMembers.commissionMember_role_name);
+                            command.Parameters.AddWithValue("@commissionRole",  commissionMembers.commissionMember_role_name);
+                            command.Parameters.AddWithValue("@protocolInfo_id", protocolInfo.id);
                             int result = command.ExecuteNonQuery();
 
                             if (result < 0)
@@ -329,6 +362,7 @@ namespace AnalyzerZakup
                     }
                     #endregion
                 }
+                //protocolInfo.commissionMembersList = (List<ProtocolInfo>)commissionMembers.protocolInfo;
                 #region db DataXML
                 dataXML.fileXml = fileEntries;
                 query =
@@ -357,7 +391,7 @@ namespace AnalyzerZakup
                 {
                     MessageBox.Show(ex.Message, "error", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
-
+                #endregion
                 #endregion
             }
             catch (Exception ex)
@@ -422,5 +456,20 @@ namespace AnalyzerZakup
         #endregion
 
     }
-}
+}                //if (fileEntries[i].StartsWith("f")) // (person.ToUpper().StartsWith("T"))
+                 //{
+                 //    MessageBox.Show("f - " + fileEntries[i]);
+                 //}
+                 //MessageBox.Show("any file - " + fileEntries[i]);
+                 //var _id = docXML.DocumentElement.SelectNodes("//ns9:id", _namespaceManager)[0].InnerText;
 
+//var _foundationDocNumber = docXML.DocumentElement.SelectNodes(
+//    "//ns9:foundationDocInfo/ns9:foundationDocNumber",
+//    _namespaceManager)[0]
+//    .InnerText;
+
+// commonInfo all
+//common_Info.commonInfo = docXML.DocumentElement.SelectNodes(
+//    "//ns9:commonInfo",
+//    _namespaceManager)[0]
+//    .InnerText;

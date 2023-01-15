@@ -29,6 +29,9 @@ namespace ZakupAnaliser
 
             DataApp.TxtBoxfilepath = textBox_filepath.Text;
             DataApp.TxtBoxFileZip = textBox_filezip.Text;
+
+
+            
         }
 
         private void button1_Click(object sender, EventArgs e)

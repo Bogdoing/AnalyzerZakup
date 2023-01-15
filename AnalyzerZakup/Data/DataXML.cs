@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
@@ -8,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace AnalyzerZakup.Data
 {
-    internal class DataXML
+    class DataXML
     {
         public int id { get; set; }
         public string fileXml { get; set; }
@@ -17,27 +19,11 @@ namespace AnalyzerZakup.Data
     class ProtocolInfo
     {
         public int id { get; set; }
-        public string foundationDocNumber { get; set; }
-        public string protocolPublisherInfoId { get; set; }
-        public int CommissionMembersID { get; set; }
+        public string commissionName { get; set; }
+        //public string protocolPublisherInfoId { get; set; }
         public List<CommissionMembers> commissionMembersList { get; set; }
-    }
-    class CommonInfo
-    {
-        public int id { get; set; }
-        public  string commonInfo { get; set; }
-        public  string commonInfo_purchaseNumber { get; set; }
-        public  string commonInfo_docNumber { get; set; }
-        public  string commonInfo_publishDTInEIS { get; set; }
-    }
-     class ProtocolPublisherInfo
-    {
-        public int id { get; set; }
-        public string protocol_regNum { get; set; }
-        public string protocol_fullName { get; set; }
-        public string protocol_factAddress { get; set; }
-        public string protocol_INN { get; set; }
-        public string protocol_KPP { get; set; }
+
+
     }
     class CommissionMembers
     {
@@ -47,9 +33,25 @@ namespace AnalyzerZakup.Data
         public string commissionMember_firstName { get; set; }
         public string commissionMember_middleName { get; set; }
         public string commissionMember_role_name { get; set; }
-        public int CommissionMembersID { get; set; }
-        [ForeignKey("CommissionMembersID")]
+        public int protocolInfoFK { get; set; }
         public ProtocolInfo protocolInfo { get; set; }
+    }
+    class CommonInfo
+    {
+        public int id { get; set; }
+        public  string commonInfo { get; set; }
+        public  string commonInfo_purchaseNumber { get; set; }
+        public  string commonInfo_docNumber { get; set; }
+        public  string commonInfo_publishDTInEIS { get; set; }
+    }
+    class ProtocolPublisherInfo
+    {
+        public int id { get; set; }
+        public string protocol_regNum { get; set; }
+        public string protocol_fullName { get; set; }
+        public string protocol_factAddress { get; set; }
+        public string protocol_INN { get; set; }
+        public string protocol_KPP { get; set; }
     }
     class ApplicationInfo
     {
