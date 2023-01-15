@@ -47,7 +47,7 @@ namespace AnalyzerZakup
             for (int i = 1; i < fileEntriesProtocol.Length; i++) // !!! i = 0 !!!
             {
                 Parse_Protocol(fileEntriesProtocol[i]);
-                MessageBox.Show("Parsing" + fileEntriesProtocol[i]);   
+                //MessageBox.Show("Parsing" + fileEntriesProtocol[i]);   
             }
             MessageBox.Show("End parsing all");
         }
@@ -106,10 +106,36 @@ namespace AnalyzerZakup
                     _namespaceManager)[0]
                     .InnerText;
 
-                var _commonInfo_procedureDT = docXML.DocumentElement.SelectNodes(
-                    "//ns9:commonInfo/ns9:publishDTInETP",
+                var _commonInfo_publishDTInEIS = docXML.DocumentElement.SelectNodes(
+                    "//ns9:commonInfo/ns9:publishDTInEIS",
                     _namespaceManager)[0]
                     .InnerText;
+                //MessageBox.Show(_commonInfo_purchaseNumber + " " + _commonInfo_docNumber + " " + _commonInfo_publishDTInEIS);
+                #region dbAddCommonInfo
+                string db_commonInfo = @"insert into commonInfo(purchaseNumber, docNumber, docPublishDTInEIS)
+                values
+                (@purchaseNumber, @docNumber, @docPublishDTInEIS)";
+                try
+                {
+                    using (SqlConnection connection = new SqlConnection(connectionString))
+                    {
+                        SqlCommand command = new SqlCommand(db_commonInfo, connection);
+                        command.Connection.Open();
+
+                        command.Parameters.AddWithValue("@purchaseNumber",      _commonInfo_purchaseNumber);
+                        command.Parameters.AddWithValue("@docNumber",           _commonInfo_docNumber);
+                        command.Parameters.AddWithValue("@docPublishDTInEIS",   DateTime.Parse(_commonInfo_publishDTInEIS));
+                        int result = command.ExecuteNonQuery();
+
+                        if (result < 0)
+                            MessageBox.Show("Ошибка добавления строки в базу данных! " + result.ToString());
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message, "error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                #endregion
                 // c close
                 // protocolPublisherInfo all
                 var _protocol_regNum = docXML.DocumentElement.SelectNodes(
@@ -133,39 +159,96 @@ namespace AnalyzerZakup
                     _namespaceManager)[0]
                     .InnerText;
                 // p close
+                #region dbAddprotocolPublisherInfo
+                string db_protocolPublisherInfoo = @"insert into protocolPublisherInfo(regNum, fullName, factAddress, INN, KPP)
+                            values
+                            (@regNum, @fullName, @factAddress, @INN, @KPP)";
+                try
+                {
+                    using (SqlConnection connection = new SqlConnection(connectionString))
+                    {
+                        SqlCommand command = new SqlCommand(db_protocolPublisherInfoo, connection);
+                        command.Connection.Open();
+                        command.Parameters.AddWithValue("@regNum",      _protocol_regNum);
+                        command.Parameters.AddWithValue("@fullName",    _protocol_fullName);
+                        command.Parameters.AddWithValue("@factAddress", _protocol_factAddress);
+                        command.Parameters.AddWithValue("@INN",         _protocol_INN);
+                        command.Parameters.AddWithValue("@KPP",         _protocol_KPP);
+                        int result = command.ExecuteNonQuery();
+
+                        if (result < 0)
+                            MessageBox.Show("Ошибка добавления строки в базу данных! " + result.ToString());
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message, "error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                #endregion
+
                 // commissionMembers all
                 var commissionMember = docXML.DocumentElement.SelectNodes(
                     "//ns3:commissionMembers/ns3:commissionMember",
                     _namespaceManager)
                     .Count.ToString();
+                string _commissionMember_memberNumber   = string.Empty,
+                        _commissionMember_lastName      = string.Empty,
+                        _commissionMember_firstName     = string.Empty,
+                        _commissionMember_middleName    = string.Empty,
+                        _commissionMember_role_name     = string.Empty;
+
                 //MessageBox.Show("commissionMember" + commissionMember);
                 for (int j = 0; j < int.Parse(commissionMember); j++)
                 {
-                    var _commissionMember_memberNumber = docXML.DocumentElement.SelectNodes(
+                    _commissionMember_memberNumber = docXML.DocumentElement.SelectNodes(
                         "//ns3:commissionMembers/ns3:commissionMember/ns3:memberNumber",
                         _namespaceManager)[j]
                         .InnerText;
-                    var _commissionMember_lastName = docXML.DocumentElement.SelectNodes(
+                    _commissionMember_lastName = docXML.DocumentElement.SelectNodes(
                         "//ns3:commissionMembers/ns3:commissionMember/ns3:nameInfo/ns3:lastName",
                         _namespaceManager)[j]
                         .InnerText;
-                    var _commissionMember_firstName = docXML.DocumentElement.SelectNodes(
+                    _commissionMember_firstName = docXML.DocumentElement.SelectNodes(
                         "//ns3:commissionMembers/ns3:commissionMember/ns3:nameInfo/ns3:firstName",
                         _namespaceManager)[j]
                         .InnerText;
-                    var _commissionMember_middleName = docXML.DocumentElement.SelectNodes(
+                    _commissionMember_middleName = docXML.DocumentElement.SelectNodes(
                         "//ns3:commissionMembers/ns3:commissionMember/ns3:nameInfo/ns3:middleName",
                         _namespaceManager)[j]
                         .InnerText;
-                    //var _commissionMember_role_code = docXML.DocumentElement.SelectNodes(
-                    //    "//ns3:commissionMembers/ns3:commissionMember/ns3:role/ns3:code",
-                    //    _namespaceManager)[j]
-                    //    .InnerText;
-                    var _commissionMember_role_name = docXML.DocumentElement.SelectNodes(
+                    _commissionMember_role_name = docXML.DocumentElement.SelectNodes(
                         "//ns3:commissionMembers/ns3:commissionMember/ns3:role/ns3:name",
                         _namespaceManager)[j]
                         .InnerText;
                     //MessageBox.Show("Parse commissionMember" + j);
+                    #region dbAddcommissionMembers
+                    string db_commissionMembers =
+                        @"insert into commissionMember (memberNumber, lastName, firstName, middleName, commision_role) 
+	                        values 
+	                        (@memberNumber, @lastName, @firstName, @middleName,	@commision_role)";
+                    try
+                    {
+                        using (SqlConnection connection = new SqlConnection(connectionString))
+                        {
+                            SqlCommand command = new SqlCommand(db_commissionMembers, connection);
+                            command.Connection.Open();
+
+                            command.Parameters.AddWithValue("@memberNumber", int.Parse(_commissionMember_memberNumber));
+                            command.Parameters.AddWithValue("@lastName", _commissionMember_lastName);
+                            command.Parameters.AddWithValue("@firstName", _commissionMember_firstName);
+                            command.Parameters.AddWithValue("@middleName", _commissionMember_middleName);
+                            command.Parameters.AddWithValue("@commision_role", _commissionMember_role_name);
+                            int result = command.ExecuteNonQuery();
+
+                            if (result < 0)
+                                MessageBox.Show("Ошибка добавления строки в базу данных! " + result.ToString());
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.Message, "error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                    #endregion
                 }
                 //
                 string _applicationInfo_appNumber;
@@ -214,33 +297,33 @@ namespace AnalyzerZakup
 
                 //MessageBox.Show("add db applicationInfo| " + _applicationInfo_appNumber + "|" + _applicationInfo_appDT + "|" + ApplicationInfo.applicationInfo_finalPrice);
 
-                //string query = "INSERT INTO sport (surname,kind_sport,place,id_country) VALUES (@surname,@kind_sport,@place, @id_country)";
-                string query = @"insert into applicationInfo (appNumber, appDT, finalPrice) 
-	                            values 
-	                            (@appNumber, @appDT, @finalPrice)";
-                //query = @"insert into test (name) 
-                //        values
-                //        (@name)"; 
-                try
-                {
-                    using (SqlConnection connection = new SqlConnection(connectionString))
-                    {
-                        SqlCommand command = new SqlCommand(query, connection);
-                        command.Connection.Open();
+                ////string query = "INSERT INTO sport (surname,kind_sport,place,id_country) VALUES (@surname,@kind_sport,@place, @id_country)";
+                //string query = @"insert into applicationInfo (appNumber, appDT, finalPrice) 
+	               //             values 
+	               //             (@appNumber, @appDT, @finalPrice)";
+                ////query = @"insert into test (name) 
+                ////        values
+                ////        (@name)"; 
+                //try
+                //{
+                //    using (SqlConnection connection = new SqlConnection(connectionString))
+                //    {
+                //        SqlCommand command = new SqlCommand(query, connection);
+                //        command.Connection.Open();
 
-                        command.Parameters.AddWithValue("@appNumber", _applicationInfo_appNumber);
-                        command.Parameters.AddWithValue("@appDT", DateTime.Parse(_applicationInfo_appDT));
-                        command.Parameters.AddWithValue("@finalPrice", float.Parse(ApplicationInfo.applicationInfo_finalPrice));
-                        int result = command.ExecuteNonQuery();
+                //        command.Parameters.AddWithValue("@appNumber", int.Parse(_applicationInfo_appNumber));
+                //        command.Parameters.AddWithValue("@appDT", DateTime.Parse(_applicationInfo_appDT));
+                //        command.Parameters.AddWithValue("@finalPrice", float.Parse(ApplicationInfo.applicationInfo_finalPrice));
+                //        int result = command.ExecuteNonQuery();
 
-                        if (result < 0)
-                            MessageBox.Show("Ошибка добавления строки в базу данных! " + result.ToString());
-                    }
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.Message, "error", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                }
+                //        if (result < 0)
+                //            MessageBox.Show("Ошибка добавления строки в базу данных! " + result.ToString());
+                //    }
+                //}
+                //catch (Exception ex)
+                //{
+                //    MessageBox.Show(ex.Message, "error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                //}
             }
             catch (Exception ex)
             {
