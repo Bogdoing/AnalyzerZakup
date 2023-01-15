@@ -16,13 +16,11 @@ namespace AnalyzerZakup.Data
     }
     class ProtocolInfo
     {
-        public int id { get; set;}
+        public int id { get; set; }
         public string foundationDocNumber { get; set; }
-
         public string protocolPublisherInfoId { get; set; }
-        
-        [ForeignKey("ProtocolInfo")]
-        public CommissionMembers commissionMembers { get; set; }
+        public int CommissionMembersID { get; set; }
+        public List<CommissionMembers> commissionMembersList { get; set; }
     }
     class CommonInfo
     {
@@ -30,16 +28,16 @@ namespace AnalyzerZakup.Data
         public  string commonInfo { get; set; }
         public  string commonInfo_purchaseNumber { get; set; }
         public  string commonInfo_docNumber { get; set; }
-        public  string commonInfo_procedureDT { get; set; }
+        public  string commonInfo_publishDTInEIS { get; set; }
     }
      class ProtocolPublisherInfo
     {
         public int id { get; set; }
-        public string _protocol_regNum { get; set; }
-        public string _protocol_fullName { get; set; }
-        public string _protocol_factAddress { get; set; }
-        public string _protocol_INN { get; set; }
-        public string _protocol_KPP { get; set; }
+        public string protocol_regNum { get; set; }
+        public string protocol_fullName { get; set; }
+        public string protocol_factAddress { get; set; }
+        public string protocol_INN { get; set; }
+        public string protocol_KPP { get; set; }
     }
     class CommissionMembers
     {
@@ -49,12 +47,9 @@ namespace AnalyzerZakup.Data
         public string commissionMember_firstName { get; set; }
         public string commissionMember_middleName { get; set; }
         public string commissionMember_role_name { get; set; }
-
-        
-        public List<ProtocolInfo> protocolInfo { get; set; }
-
-        [ForeignKey("DataXML")]
-        public List<DataXML> dataXML { get; set; }
+        public int CommissionMembersID { get; set; }
+        [ForeignKey("CommissionMembersID")]
+        public ProtocolInfo protocolInfo { get; set; }
     }
     class ApplicationInfo
     {
@@ -63,10 +58,9 @@ namespace AnalyzerZakup.Data
         public string applicationInfo_appDT { get; set; }
         public string applicationInfo_finalPrice { get; set; }
 
-        public float strTofloat()
+        public float strTofloat(string str)
         {
-            return float.Parse(applicationInfo_finalPrice.Replace(".", ","));
+            return float.Parse(str.Replace(".", ","));
         }
     }
-
 }

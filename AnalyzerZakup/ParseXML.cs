@@ -60,7 +60,7 @@ namespace AnalyzerZakup
             
             DataXML dataXML = new DataXML();
             ProtocolInfo protocolInfo = new ProtocolInfo();
-            CommonInfo commonInfo = new CommonInfo();
+            CommonInfo common_Info = new CommonInfo();
             ProtocolPublisherInfo protocolPublisherInfo = new ProtocolPublisherInfo();
             CommissionMembers commissionMembers = new CommissionMembers();
             ApplicationInfo applicationInfo = new ApplicationInfo();
@@ -90,30 +90,30 @@ namespace AnalyzerZakup
                 //    MessageBox.Show("f - " + fileEntries[i]);
                 //}
                 //MessageBox.Show("any file - " + fileEntries[i]);
-                var _id = docXML.DocumentElement.SelectNodes("//ns9:id", _namespaceManager)[0].InnerText;
+                //var _id = docXML.DocumentElement.SelectNodes("//ns9:id", _namespaceManager)[0].InnerText;
 
-                var _foundationDocNumber = docXML.DocumentElement.SelectNodes(
-                    "//ns9:foundationDocInfo/ns9:foundationDocNumber",
-                    _namespaceManager)[0]
-                    .InnerText;
+                //var _foundationDocNumber = docXML.DocumentElement.SelectNodes(
+                //    "//ns9:foundationDocInfo/ns9:foundationDocNumber",
+                //    _namespaceManager)[0]
+                //    .InnerText;
 
                 // commonInfo all
-                var _commonInfo = docXML.DocumentElement.SelectNodes(
-                    "//ns9:commonInfo",
-                    _namespaceManager)[0]
-                    .InnerText;
+                //common_Info.commonInfo = docXML.DocumentElement.SelectNodes(
+                //    "//ns9:commonInfo",
+                //    _namespaceManager)[0]
+                //    .InnerText;
 
-                var _commonInfo_purchaseNumber = docXML.DocumentElement.SelectNodes(
+                common_Info.commonInfo_purchaseNumber = docXML.DocumentElement.SelectNodes(
                     "//ns9:commonInfo/ns9:purchaseNumber",
                     _namespaceManager)[0]
                     .InnerText;
 
-                var _commonInfo_docNumber = docXML.DocumentElement.SelectNodes(
+                common_Info.commonInfo_docNumber = docXML.DocumentElement.SelectNodes(
                     "//ns9:commonInfo/ns9:docNumber",
                     _namespaceManager)[0]
                     .InnerText;
 
-                var _commonInfo_publishDTInEIS = docXML.DocumentElement.SelectNodes(
+                common_Info.commonInfo_publishDTInEIS = docXML.DocumentElement.SelectNodes(
                     "//ns9:commonInfo/ns9:publishDTInEIS",
                     _namespaceManager)[0]
                     .InnerText;
@@ -129,9 +129,9 @@ namespace AnalyzerZakup
                         SqlCommand command = new SqlCommand(db_commonInfo, connection);
                         command.Connection.Open();
 
-                        command.Parameters.AddWithValue("@purchaseNumber",      _commonInfo_purchaseNumber);
-                        command.Parameters.AddWithValue("@docNumber",           _commonInfo_docNumber);
-                        command.Parameters.AddWithValue("@docPublishDTInEIS",   DateTime.Parse(_commonInfo_publishDTInEIS));
+                        command.Parameters.AddWithValue("@purchaseNumber",      common_Info.commonInfo_purchaseNumber);
+                        command.Parameters.AddWithValue("@docNumber",           common_Info.commonInfo_docNumber);
+                        command.Parameters.AddWithValue("@docPublishDTInEIS",   DateTime.Parse(common_Info.commonInfo_publishDTInEIS));
                         int result = command.ExecuteNonQuery();
 
                         if (result < 0)
@@ -145,23 +145,23 @@ namespace AnalyzerZakup
                 #endregion
                 // c close
                 // protocolPublisherInfo all
-                var _protocol_regNum = docXML.DocumentElement.SelectNodes(
+                protocolPublisherInfo.protocol_regNum = docXML.DocumentElement.SelectNodes(
                     "//ns9:protocolPublisherInfo/ns9:publisherOrg/ns9:regNum",
                     _namespaceManager)[0]
                     .InnerText;
-                var _protocol_fullName = docXML.DocumentElement.SelectNodes(
+                protocolPublisherInfo.protocol_fullName = docXML.DocumentElement.SelectNodes(
                     "//ns9:protocolPublisherInfo/ns9:publisherOrg/ns9:fullName",
                     _namespaceManager)[0]
                     .InnerText;
-                var _protocol_factAddress = docXML.DocumentElement.SelectNodes(
+                protocolPublisherInfo.protocol_factAddress = docXML.DocumentElement.SelectNodes(
                     "//ns9:protocolPublisherInfo/ns9:publisherOrg/ns9:factAddress",
                     _namespaceManager)[0]
                     .InnerText;
-                var _protocol_INN = docXML.DocumentElement.SelectNodes(
+                protocolPublisherInfo.protocol_INN = docXML.DocumentElement.SelectNodes(
                     "//ns9:protocolPublisherInfo/ns9:publisherOrg/ns9:INN",
                     _namespaceManager)[0]
                     .InnerText;
-                var _protocol_KPP = docXML.DocumentElement.SelectNodes(
+                protocolPublisherInfo.protocol_KPP = docXML.DocumentElement.SelectNodes(
                     "//ns9:protocolPublisherInfo/ns9:publisherOrg/ns9:KPP",
                     _namespaceManager)[0]
                     .InnerText;
@@ -176,11 +176,83 @@ namespace AnalyzerZakup
                     {
                         SqlCommand command = new SqlCommand(db_protocolPublisherInfoo, connection);
                         command.Connection.Open();
-                        command.Parameters.AddWithValue("@regNum",      _protocol_regNum);
-                        command.Parameters.AddWithValue("@fullName",    _protocol_fullName);
-                        command.Parameters.AddWithValue("@factAddress", _protocol_factAddress);
-                        command.Parameters.AddWithValue("@INN",         _protocol_INN);
-                        command.Parameters.AddWithValue("@KPP",         _protocol_KPP);
+                        command.Parameters.AddWithValue("@regNum",      protocolPublisherInfo.protocol_regNum);
+                        command.Parameters.AddWithValue("@fullName",    protocolPublisherInfo.protocol_fullName);
+                        command.Parameters.AddWithValue("@factAddress", protocolPublisherInfo.protocol_factAddress);
+                        command.Parameters.AddWithValue("@INN",         protocolPublisherInfo.protocol_INN);
+                        command.Parameters.AddWithValue("@KPP",         protocolPublisherInfo.protocol_KPP);
+                        int result = command.ExecuteNonQuery();
+
+                        if (result < 0)
+                            MessageBox.Show("Ошибка добавления строки в базу данных! " + result.ToString());
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message, "error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                #endregion
+
+                // add DB applicationInfo
+                string _applicationInfo_appNumber;
+                string _applicationInfo_appDT;
+                string _applicationInfo_finalPrice;
+                var cnt_appNumber = docXML.DocumentElement.SelectNodes(
+                        "//ns9:applicationsInfo/ns9:applicationInfo/ns9:commonInfo/ns9:appNumber",
+                        _namespaceManager)
+                        .Count;
+                //MessageBox.Show(cnt_appNumber);
+                if (cnt_appNumber != 0)
+                {
+                    applicationInfo.applicationInfo_appNumber = docXML.DocumentElement.SelectNodes(
+                            "//ns9:applicationsInfo/ns9:applicationInfo/ns9:commonInfo/ns9:appNumber",
+                            _namespaceManager)[cnt_appNumber - 1]
+                            .InnerText;
+                    applicationInfo.applicationInfo_appDT = docXML.DocumentElement.SelectNodes(
+                            "//ns9:applicationsInfo/ns9:applicationInfo/ns9:commonInfo/ns9:appDT",
+                            _namespaceManager)[0]
+                            .InnerText;
+
+                    var cnt_final_Prise = docXML.DocumentElement.SelectNodes(
+                            "//ns9:applicationsInfo/ns9:applicationInfo/ns9:finalPrice",
+                            _namespaceManager)
+                            .Count.ToString();
+                    if (cnt_final_Prise == "0")
+                    {
+                        applicationInfo.applicationInfo_finalPrice = "0.0";
+                    }
+                    else
+                    {
+                        applicationInfo.applicationInfo_finalPrice = docXML.DocumentElement.SelectNodes(
+                            "//ns9:applicationsInfo/ns9:applicationInfo/ns9:finalPrice",
+                            _namespaceManager)[int.Parse(cnt_final_Prise) - 1]
+                            .InnerText;
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("ELSE appNumber");
+                    applicationInfo.applicationInfo_appNumber = "0";
+                    applicationInfo.applicationInfo_finalPrice = "0.0";
+                    applicationInfo.applicationInfo_appDT = "01.01.1999 0:00:00"; //"01.01.2000 0:00:00"
+                }
+
+                //MessageBox.Show("add db applicationInfo| " + _applicationInfo_appNumber + "|" + _applicationInfo_appDT + "|" + ApplicationInfo.applicationInfo_finalPrice);
+
+                #region dbApplicationInfo
+                string query = @"insert into applicationInfo (appNumber, appDT, finalPrice) 
+	                            values 
+	                            (@appNumber, @appDT, @finalPrice)";
+                try
+                {
+                    using (SqlConnection connection = new SqlConnection(connectionString))
+                    {
+                        SqlCommand command = new SqlCommand(query, connection);
+                        command.Connection.Open();
+
+                        command.Parameters.AddWithValue("@appNumber",   int.Parse(applicationInfo.applicationInfo_appNumber));
+                        command.Parameters.AddWithValue("@appDT",       DateTime.Parse(applicationInfo.applicationInfo_appDT));
+                        command.Parameters.AddWithValue("@finalPrice",  applicationInfo.strTofloat(applicationInfo.applicationInfo_finalPrice));
                         int result = command.ExecuteNonQuery();
 
                         if (result < 0)
@@ -207,23 +279,23 @@ namespace AnalyzerZakup
                 //MessageBox.Show("commissionMember" + commissionMember);
                 for (int j = 0; j < int.Parse(commissionMember); j++)
                 {
-                    _commissionMember_memberNumber = docXML.DocumentElement.SelectNodes(
+                    commissionMembers.commissionMember_memberNumber = docXML.DocumentElement.SelectNodes(
                         "//ns3:commissionMembers/ns3:commissionMember/ns3:memberNumber",
                         _namespaceManager)[j]
                         .InnerText;
-                    _commissionMember_lastName = docXML.DocumentElement.SelectNodes(
+                    commissionMembers.commissionMember_lastName = docXML.DocumentElement.SelectNodes(
                         "//ns3:commissionMembers/ns3:commissionMember/ns3:nameInfo/ns3:lastName",
                         _namespaceManager)[j]
                         .InnerText;
-                    _commissionMember_firstName = docXML.DocumentElement.SelectNodes(
+                    commissionMembers.commissionMember_firstName = docXML.DocumentElement.SelectNodes(
                         "//ns3:commissionMembers/ns3:commissionMember/ns3:nameInfo/ns3:firstName",
                         _namespaceManager)[j]
                         .InnerText;
-                    _commissionMember_middleName = docXML.DocumentElement.SelectNodes(
+                    commissionMembers.commissionMember_middleName = docXML.DocumentElement.SelectNodes(
                         "//ns3:commissionMembers/ns3:commissionMember/ns3:nameInfo/ns3:middleName",
                         _namespaceManager)[j]
                         .InnerText;
-                    _commissionMember_role_name = docXML.DocumentElement.SelectNodes(
+                    commissionMembers.commissionMember_role_name = docXML.DocumentElement.SelectNodes(
                         "//ns3:commissionMembers/ns3:commissionMember/ns3:role/ns3:name",
                         _namespaceManager)[j]
                         .InnerText;
@@ -240,11 +312,11 @@ namespace AnalyzerZakup
                             SqlCommand command = new SqlCommand(db_commissionMembers, connection);
                             command.Connection.Open();
 
-                            command.Parameters.AddWithValue("@memberNumber", int.Parse(_commissionMember_memberNumber));
-                            command.Parameters.AddWithValue("@lastName", _commissionMember_lastName);
-                            command.Parameters.AddWithValue("@firstName", _commissionMember_firstName);
-                            command.Parameters.AddWithValue("@middleName", _commissionMember_middleName);
-                            command.Parameters.AddWithValue("@commision_role", _commissionMember_role_name);
+                            command.Parameters.AddWithValue("@memberNumber",    int.Parse(commissionMembers.commissionMember_memberNumber));
+                            command.Parameters.AddWithValue("@lastName",        commissionMembers.commissionMember_lastName);
+                            command.Parameters.AddWithValue("@firstName",       commissionMembers.commissionMember_firstName);
+                            command.Parameters.AddWithValue("@middleName",      commissionMembers.commissionMember_middleName);
+                            command.Parameters.AddWithValue("@commision_role",  commissionMembers.commissionMember_role_name);
                             int result = command.ExecuteNonQuery();
 
                             if (result < 0)
@@ -257,81 +329,11 @@ namespace AnalyzerZakup
                     }
                     #endregion
                 }
-                //
-                string _applicationInfo_appNumber;
-                string _applicationInfo_appDT;
-                string _applicationInfo_finalPrice;
-                var cnt_appNumber = docXML.DocumentElement.SelectNodes(
-                        "//ns9:applicationsInfo/ns9:applicationInfo/ns9:commonInfo/ns9:appNumber",
-                        _namespaceManager)
-                        .Count;
-                //MessageBox.Show(cnt_appNumber);
-                if (cnt_appNumber != 0)
-                {
-                    _applicationInfo_appNumber = docXML.DocumentElement.SelectNodes(
-                            "//ns9:applicationsInfo/ns9:applicationInfo/ns9:commonInfo/ns9:appNumber",
-                            _namespaceManager)[cnt_appNumber-1]
-                            .InnerText;
-                    _applicationInfo_appDT = docXML.DocumentElement.SelectNodes(
-                            "//ns9:applicationsInfo/ns9:applicationInfo/ns9:commonInfo/ns9:appDT",
-                            _namespaceManager)[0]
-                            .InnerText;
-
-                    var cnt_final_Prise = docXML.DocumentElement.SelectNodes(
-                            "//ns9:applicationsInfo/ns9:applicationInfo/ns9:finalPrice",
-                            _namespaceManager)
-                            .Count.ToString();
-                    if (cnt_final_Prise == "0")
-                    {
-                        applicationInfo.applicationInfo_finalPrice = "0";
-                    }
-                    else
-                    {
-                        _applicationInfo_finalPrice = docXML.DocumentElement.SelectNodes(
-                            "//ns9:applicationsInfo/ns9:applicationInfo/ns9:finalPrice",
-                            _namespaceManager)[int.Parse(cnt_final_Prise) - 1]
-                            .InnerText;
-                        applicationInfo.applicationInfo_finalPrice = _applicationInfo_finalPrice;
-                    }
-                }
-                else
-                {
-                    MessageBox.Show("ELSE appNumber");
-                    _applicationInfo_appNumber = "0";
-                    _applicationInfo_appDT = "01.01.1999 0:00:00"; //"01.01.2000 0:00:00"
-                }
-
-                //MessageBox.Show("add db applicationInfo| " + _applicationInfo_appNumber + "|" + _applicationInfo_appDT + "|" + ApplicationInfo.applicationInfo_finalPrice);
-
-                #region dbApplicationInfo
-                string query = @"insert into applicationInfo (appNumber, appDT, finalPrice) 
-	                            values 
-	                            (@appNumber, @appDT, @finalPrice)"; 
-                try
-                {
-                    using (SqlConnection connection = new SqlConnection(connectionString))
-                    {
-                        SqlCommand command = new SqlCommand(query, connection);
-                        command.Connection.Open();
-
-                        command.Parameters.AddWithValue("@appNumber",   int.Parse(_applicationInfo_appNumber));
-                        command.Parameters.AddWithValue("@appDT",       DateTime.Parse(_applicationInfo_appDT));
-                        command.Parameters.AddWithValue("@finalPrice",  applicationInfo.strTofloat());
-                        int result = command.ExecuteNonQuery();
-
-                        if (result < 0)
-                            MessageBox.Show("Ошибка добавления строки в базу данных! " + result.ToString());
-                    }
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.Message, "error", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                }
-                #endregion
                 #region db DataXML
+                dataXML.fileXml = fileEntries;
                 query =
                     @"DECLARE @fileXml xml;
-                        SELECT @fileXml = (SELECT * FROM OPENROWSET(BULK '" + fileEntries + "', SINGLE_BLOB) as [xml])" +
+                        SELECT @fileXml = (SELECT * FROM OPENROWSET(BULK '" + dataXML.fileXml + "', SINGLE_BLOB) as [xml])" +
                             "insert into dataXml(fileXml, typeXml)" +
                             "values (@fileXml, @typeXml)";
                 try
@@ -341,10 +343,10 @@ namespace AnalyzerZakup
                         SqlCommand command = new SqlCommand(query, connection);
                         command.Connection.Open();
                         //D:\files\CODE\C#\Cours3_1\CouksMakovii\up\fcsPlacementResult_2400500000222000501_20375535.xml
-                        string[] test = fileEntries.Split('\\');
+                        string[] test = dataXML.fileXml.Split('\\');
                         string test2 = test[test.Length - 1];
-                        string test3 = test2.Split('_')[0];
-                        command.Parameters.AddWithValue("@typeXml", test3);
+                        dataXML.fileType = test2.Split('_')[0];
+                        command.Parameters.AddWithValue("@typeXml", dataXML.fileType);
                         int result = command.ExecuteNonQuery();
 
                         if (result < 0)
