@@ -48,7 +48,7 @@ namespace AnalyzerZakup
             for (int i = 1; i < fileEntriesProtocol.Length; i++) // !!! i = 0 !!!
             {
                 Parse_Protocol(fileEntriesProtocol[i]);
-                MessageBox.Show("Parsing" + fileEntriesProtocol[i]);   
+                //MessageBox.Show("Parsing" + fileEntriesProtocol[i]);   
             }
             MessageBox.Show("End parsing all");
         }
@@ -57,7 +57,13 @@ namespace AnalyzerZakup
         {
             XmlDocument docXML = new XmlDocument(); // XML-документ
             docXML.Load(fileEntries); // загрузить XML
-
+            
+            DataXML dataXML = new DataXML();
+            ProtocolInfo protocolInfo = new ProtocolInfo();
+            CommonInfo commonInfo = new CommonInfo();
+            ProtocolPublisherInfo protocolPublisherInfo = new ProtocolPublisherInfo();
+            CommissionMembers commissionMembers = new CommissionMembers();
+            ApplicationInfo applicationInfo = new ApplicationInfo();
             //XmlTextReader reader = new XmlTextReader(fileEntries[i]);
             //XmlNamespaceManager nsmanager = new XmlNamespaceManager(reader.NameTable);
             // инициализация пространства имён
@@ -277,7 +283,7 @@ namespace AnalyzerZakup
                             .Count.ToString();
                     if (cnt_final_Prise == "0")
                     {
-                        ApplicationInfo.applicationInfo_finalPrice = "0";
+                        applicationInfo.applicationInfo_finalPrice = "0";
                     }
                     else
                     {
@@ -285,19 +291,19 @@ namespace AnalyzerZakup
                             "//ns9:applicationsInfo/ns9:applicationInfo/ns9:finalPrice",
                             _namespaceManager)[int.Parse(cnt_final_Prise) - 1]
                             .InnerText;
-                        ApplicationInfo.applicationInfo_finalPrice = _applicationInfo_finalPrice;
+                        applicationInfo.applicationInfo_finalPrice = _applicationInfo_finalPrice;
                     }
                 }
                 else
                 {
                     MessageBox.Show("ELSE appNumber");
                     _applicationInfo_appNumber = "0";
-                    _applicationInfo_appDT = "0";
+                    _applicationInfo_appDT = "01.01.1999 0:00:00"; //"01.01.2000 0:00:00"
                 }
 
                 //MessageBox.Show("add db applicationInfo| " + _applicationInfo_appNumber + "|" + _applicationInfo_appDT + "|" + ApplicationInfo.applicationInfo_finalPrice);
 
-                //string query = "INSERT INTO sport (surname,kind_sport,place,id_country) VALUES (@surname,@kind_sport,@place, @id_country)";
+                #region dbApplicationInfo
                 string query = @"insert into applicationInfo (appNumber, appDT, finalPrice) 
 	                            values 
 	                            (@appNumber, @appDT, @finalPrice)"; 
@@ -310,7 +316,7 @@ namespace AnalyzerZakup
 
                         command.Parameters.AddWithValue("@appNumber",   int.Parse(_applicationInfo_appNumber));
                         command.Parameters.AddWithValue("@appDT",       DateTime.Parse(_applicationInfo_appDT));
-                        command.Parameters.AddWithValue("@finalPrice",  ApplicationInfo.strTofloat());
+                        command.Parameters.AddWithValue("@finalPrice",  applicationInfo.strTofloat());
                         int result = command.ExecuteNonQuery();
 
                         if (result < 0)
@@ -321,6 +327,36 @@ namespace AnalyzerZakup
                 {
                     MessageBox.Show(ex.Message, "error", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
+                #endregion
+                #region db DataXML
+                query =
+                    @"DECLARE @fileXml xml;
+                        SELECT @fileXml = (SELECT * FROM OPENROWSET(BULK '" + fileEntries + "', SINGLE_BLOB) as [xml])" +
+                            "insert into dataXml(fileXml, typeXml)" +
+                            "values (@fileXml, @typeXml)";
+                try
+                {
+                    using (SqlConnection connection = new SqlConnection(connectionString))
+                    {
+                        SqlCommand command = new SqlCommand(query, connection);
+                        command.Connection.Open();
+                        //D:\files\CODE\C#\Cours3_1\CouksMakovii\up\fcsPlacementResult_2400500000222000501_20375535.xml
+                        string[] test = fileEntries.Split('\\');
+                        string test2 = test[test.Length - 1];
+                        string test3 = test2.Split('_')[0];
+                        command.Parameters.AddWithValue("@typeXml", test3);
+                        int result = command.ExecuteNonQuery();
+
+                        if (result < 0)
+                            MessageBox.Show("Ошибка добавления строки в базу данных! " + result.ToString());
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message, "error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+
+                #endregion
             }
             catch (Exception ex)
             {
