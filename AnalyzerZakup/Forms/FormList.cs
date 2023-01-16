@@ -81,6 +81,9 @@ namespace AnalyzerZakup
             string query_cmb_d3 = @"select distinct(rtrim(docNumber)) as docNumber
                             from commonInfo  union all (select '' as docNumber) 
                             order by docNumber";
+            string query_cmb_d4 = @"select distinct(typeXml) from dataXml
+                            union all (select '' as typeXml)
+                            order by typeXml";
             try
             {
                 using (SqlConnection connection = new SqlConnection(connectionString))
@@ -124,6 +127,23 @@ namespace AnalyzerZakup
                     sadapter.Fill(stable);
                     comboBox3.DataSource = stable;
                     comboBox3.DisplayMember = "docNumber";
+                    //comboBox3.ValueMember = "id";
+                    connection.Close();
+                }
+
+            }
+            catch (Exception ex) { MessageBox.Show(ex.Message, "error", MessageBoxButtons.OK, MessageBoxIcon.Information); }
+
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    SqlCommand comm = new SqlCommand(query_cmb_d4, connection);
+                    DataTable stable = new DataTable();
+                    SqlDataAdapter sadapter = new SqlDataAdapter(comm);
+                    sadapter.Fill(stable);
+                    comboBox4.DataSource = stable;
+                    comboBox4.DisplayMember = "typeXml";
                     //comboBox3.ValueMember = "id";
                     connection.Close();
                 }
@@ -308,12 +328,70 @@ between '" + comboBox1.Text + "' and '" + comboBox2.Text + "' and c.docPublishDT
                     FormReference formReference = new FormReference(dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString());
                     formReference.Show();
                 }
+                else
+                if (dataGridView1.Columns[dataGridView1.CurrentCell.ColumnIndex].HeaderText.ToString() ==
+                    "Название комиссии")
+                {
+                    FormReference formReference = new FormReference(dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString());
+                    formReference.Show();
+                }
             }
             catch (Exception exception)
             {
                 MessageBox.Show("cell content exp | " + exception);
                 throw;
             }
+        }
+
+        private void comboBox4_TextChanged(object sender, EventArgs e)
+        {
+            string query_cmb4_sort = "";
+            if (comboBox4.Text != "")
+            {
+                query_cmb4_sort = @"select
+                    distinct(x.typeXml) as 'Тип протокола', p.fullName as 'Полное наименование', pr.commissionName as 'Название комиссии', a.finalPrice as 'Цена', 
+                    a.appDT as 'Дата публикации', c.docPublishDTInEIS as 'Дата оплаты',
+                    p.factAddress as 'Фактический адрес', c.docNumber as 'Вид документа'
+                        from applicationInfo a, commonInfo c, protocolPublisherInfo p, protocolInfo pr, dataXml x
+                        where c.id = a.id and c.id = p.id and c.id = pr.id and x.typeXml = '" + comboBox4.Text + "'";
+            }
+            else
+            {
+                query_cmb4_sort = @"select
+	                    distinct(p.fullName) as 'Полное наименование', 
+	                    pr.commissionName as 'Название комиссии', 
+	                    a.finalPrice as 'Цена',  
+	                    a.appDT as 'Дата публикации', 
+	                    c.docPublishDTInEIS as 'Дата оплаты',  
+	                    p.INN, p.KPP, 
+	                    p.factAddress as 'Фактический адрес', 
+	                    c.purchaseNumber as 'Номер документа', 
+	                    c.docNumber as 'Вид документа', 
+	                    p.regNum as 'Рег. номер'
+                    from applicationInfo a, commonInfo c, protocolPublisherInfo p, protocolInfo pr
+                    where c.id = a.id and c.id = p.id and c.id = pr.id";
+            }
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    SqlCommand comm = new SqlCommand(query_cmb4_sort, connection);
+                    DataTable table = new DataTable();
+                    SqlDataAdapter adapter = new SqlDataAdapter(comm);
+                    adapter.Fill(table);
+                    dataGridView1.DataSource = table;
+                    dataGridView1.Columns[0].Visible = true;
+                    dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+
+                    connection.Close();
+                }
+
+            }
+            catch (Exception ex) { MessageBox.Show(ex.Message, "using error", MessageBoxButtons.OK, MessageBoxIcon.Information); }
+        }
+
+        private void button1_Click_1(object sender, EventArgs e)
+        {
         }
         //public`void TestRead()
         //{

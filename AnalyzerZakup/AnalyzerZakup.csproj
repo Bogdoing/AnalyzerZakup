@@ -150,17 +150,17 @@
     <Compile Include="Forms\FormList.Designer.cs">
       <DependentUpon>FormList.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\FormMain.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FormMain.Designer.cs">
+      <DependentUpon>FormMain.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\FormReference.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Forms\FormReference.Designer.cs">
       <DependentUpon>FormReference.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\FormSerialization.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\FormSerialization.Designer.cs">
-      <DependentUpon>FormSerialization.cs</DependentUpon>
     </Compile>
     <Compile Include="FTPLoad.cs" />
     <Compile Include="ParseXML.cs" />
@@ -173,11 +173,11 @@
     <EmbeddedResource Include="Forms\FormList.resx">
       <DependentUpon>FormList.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FormMain.resx">
+      <DependentUpon>FormMain.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\FormReference.resx">
       <DependentUpon>FormReference.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\FormSerialization.resx">
-      <DependentUpon>FormSerialization.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
