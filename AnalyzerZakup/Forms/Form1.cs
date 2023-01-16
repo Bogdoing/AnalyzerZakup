@@ -173,7 +173,7 @@ namespace ZakupAnaliser
             // Распаковываем архивы
 
             tbx.AppendText(DateTime.Now.ToString() + " Работает 7-ZIP\n");
-            //UnZipFile("*.zip", filepath);
+            UnZipFile("*.zip", filepath);
             tbx.AppendText(DateTime.Now.ToString() + " Отработал 7-ZIP\n");
             
 

@@ -109,7 +109,7 @@ namespace AnalyzerZakup
                     "//ns9:commissionInfo/ns3:commissionName",
                     _namespaceManager)[0]
                     .InnerText;
-                else protocolInfo.commissionName = "Отсутствует";
+                else protocolInfo.commissionName = "Не определена";
                 string db_commissionName = @"insert into protocolInfo (commissionName ) values (@commissionName)";
                 try
                 {

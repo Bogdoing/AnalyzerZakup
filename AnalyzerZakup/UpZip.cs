@@ -103,6 +103,15 @@ namespace AnalyzerZakup
             catch (DirectoryNotFoundException dirNotFound) { Console.WriteLine("Exception Dir - ", dirNotFound.Message); }
             catch (Exception e) { Console.WriteLine("Exception - ", e); }
         }
+
+        static void delCount(string fileName)
+        {           
+            try
+            {
+                File.WriteAllText(fileName, "1");
+            }
+            catch (Exception e) { Console.WriteLine("Exception - ", e); }
+        }
         #endregion 
     }
 }

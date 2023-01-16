@@ -150,6 +150,12 @@
     <Compile Include="Forms\FormList.Designer.cs">
       <DependentUpon>FormList.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\FormReference.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FormReference.Designer.cs">
+      <DependentUpon>FormReference.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\FormSerialization.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -166,6 +172,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\FormList.resx">
       <DependentUpon>FormList.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FormReference.resx">
+      <DependentUpon>FormReference.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\FormSerialization.resx">
       <DependentUpon>FormSerialization.cs</DependentUpon>
