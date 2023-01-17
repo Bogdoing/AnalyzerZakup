@@ -390,9 +390,6 @@ between '" + comboBox1.Text + "' and '" + comboBox2.Text + "' and c.docPublishDT
             catch (Exception ex) { MessageBox.Show(ex.Message, "using error", MessageBoxButtons.OK, MessageBoxIcon.Information); }
         }
 
-        private void button1_Click_1(object sender, EventArgs e)
-        {
-        }
         //public`void TestRead()
         //{
 
