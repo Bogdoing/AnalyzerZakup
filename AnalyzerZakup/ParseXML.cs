@@ -20,8 +20,8 @@ namespace AnalyzerZakup
 {
     internal class ParseXML
     {
-        private const string connectionString =
-                "Data Source=DESKTOP-432U1GM\\SQLEXPRESS;Initial Catalog=AnalizeXML;Integrated Security=True;MultipleActiveResultSets=True;"; //AnalizeXML
+        private readonly string connectionString = DataApp.TxtBoxFileDB;
+                //"Data Source=DESKTOP-432U1GM\\SQLEXPRESS;Initial Catalog=AnalizeXml2;Integrated Security=True;MultipleActiveResultSets=True;"; //AnalizeXML
         private DataTable CreateTable()
         {
             //создаём таблицу
@@ -49,7 +49,7 @@ namespace AnalyzerZakup
             {
                 Parse_Protocol(fileEntriesProtocol[i]);
 
-                MessageBox.Show("Parsing" + fileEntriesProtocol[i]);   
+                //MessageBox.Show("Parsing" + fileEntriesProtocol[i]);   
             }
             MessageBox.Show("End parsing all");
         }
@@ -66,7 +66,6 @@ namespace AnalyzerZakup
             {
                 count = int.Parse(File.ReadAllText(_fileName));  // int.Parse(string)
             }
-            //File.ReadAllText(_fileName);
 
 
             DataXML dataXML = new DataXML();
@@ -79,9 +78,8 @@ namespace AnalyzerZakup
             protocolInfo.id = count;
             count++;
             File.WriteAllText(_fileName, count + "");
-            MessageBox.Show(protocolInfo.id + "");
-            //XmlTextReader reader = new XmlTextReader(fileEntries[i]);
-            //XmlNamespaceManager nsmanager = new XmlNamespaceManager(reader.NameTable);
+            //MessageBox.Show(protocolInfo.id + "");
+
             // инициализация пространства имён
             XmlNamespaceManager _namespaceManager = new XmlNamespaceManager(docXML.NameTable);
             _namespaceManager.AddNamespace("ns", "http://zakupki.gov.ru/oos/types/1");

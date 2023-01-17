@@ -19,8 +19,8 @@ namespace AnalyzerZakup
 {
     public partial class FormList : Form
     {
-        private const string connectionString =
-                "Data Source=DESKTOP-432U1GM\\SQLEXPRESS;Initial Catalog=AnalizeXML;Integrated Security=True;MultipleActiveResultSets=True;"; //AnalizeXML
+        private readonly string connectionString = DataApp.TxtBoxFileDB;
+                //"Data Source=DESKTOP-432U1GM\\SQLEXPRESS;Initial Catalog=AnalizeXML;Integrated Security=True;MultipleActiveResultSets=True;"; //AnalizeXML
 
         public FormList()
         {
@@ -43,11 +43,11 @@ namespace AnalyzerZakup
         {
             string query_all = @"select * from commissionMember";
             query_all = @"select
-	                    distinct(p.fullName) as 'Полное наименование', 
+	                    p.fullName as 'Полное наименование', 
 	                    pr.commissionName as 'Название комиссии', 
 	                    a.finalPrice as 'Цена',  
-	                    a.appDT as 'Дата публикации', 
-	                    c.docPublishDTInEIS as 'Дата оплаты',  
+	                    a.appDT as 'Дата сделки', 
+	                    c.docPublishDTInEIS as 'Дата публикации документа',  
 	                    p.INN, p.KPP, 
 	                    p.factAddress as 'Фактический адрес', 
 	                    c.purchaseNumber as 'Номер документа', 
@@ -200,11 +200,11 @@ namespace AnalyzerZakup
                 if (comboBox2.Text == string.Empty)
                 {
                     query_cmb_sort = @"select
-	                    distinct(p.fullName) as 'Полное наименование', 
+	                    p.fullName as 'Полное наименование', 
 	                    pr.commissionName as 'Название комиссии', 
 	                    a.finalPrice as 'Цена',  
-	                    a.appDT as 'Дата публикации', 
-	                    c.docPublishDTInEIS as 'Дата оплаты',  
+	                    a.appDT as 'Дата сделки', 
+	                    c.docPublishDTInEIS as 'Дата публикации документа',  
 	                    p.INN, p.KPP, 
 	                    p.factAddress as 'Фактический адрес', 
 	                    c.purchaseNumber as 'Номер документа', 
@@ -216,10 +216,11 @@ namespace AnalyzerZakup
                 else if (comboBox2.Text != string.Empty)
                 {
                     query_cmb_sort = @"select
-                distinct(p.fullName) as 'Полное наименование', pr.commissionName as 'Название комиссии', a.finalPrice as 'Цена',  a.appDT as 'Дата публикации', c.docPublishDTInEIS as 'Дата оплаты',
+                distinct(p.fullName) as 'Полное наименование', pr.commissionName as 'Название комиссии', 
+                a.finalPrice as 'Цена',  a.appDT as 'Дата сделки', c.docPublishDTInEIS as 'Дата публикации документа',
                 p.INN, p.KPP, p.factAddress as 'Фактический адрес', c.purchaseNumber as 'Номер документа', c.docNumber as 'Вид документа', p.regNum as 'Рег. номер'
                 from applicationInfo a, commonInfo c, protocolPublisherInfo p, protocolInfo pr
-                where c.id = a.id and c.id = p.id and c.id = pr.id and c.docPublishDTInEIS between '1999/01/01' and '" + comboBox2.Text + "'";
+                where c.id = a.id and c.id = p.id and c.id = pr.id and c.docPublishDTInEIS >= '" + comboBox2.Text + "' order by c.docPublishDTInEIS";
                 }
             }
             else
@@ -228,9 +229,9 @@ namespace AnalyzerZakup
                 if (comboBox2.Text != string.Empty)
                 {
                     query_cmb_sort =
-                        @"select distinct(p.fullName) as 'Полное наименование', pr.commissionName as 'Название комиссии',
-                            a.finalPrice as 'Цена',  a.appDT as 'Дата публикации',
-                            c.docPublishDTInEIS as 'Дата оплаты',
+                        @"select p.fullName as 'Полное наименование', pr.commissionName as 'Название комиссии',
+                            a.finalPrice as 'Цена',  a.appDT as 'Дата сделки',
+                            c.docPublishDTInEIS as 'Дата публикации документа',
                             p.INN, p.KPP, p.factAddress as 'Фактический адрес', 
                             c.purchaseNumber as 'Номер документа', 
                             c.docNumber as 'Вид документа', p.regNum as 'Рег. номер'
@@ -241,10 +242,10 @@ between '" + comboBox1.Text + "' and '" + comboBox2.Text + "' and c.docPublishDT
                 else
                 {
                     query_cmb_sort = @"select
-                distinct(p.fullName) as 'Полное наименование', pr.commissionName as 'Название комиссии', a.finalPrice as 'Цена',  a.appDT as 'Дата публикации', c.docPublishDTInEIS as 'Дата оплаты',
-                p.INN, p.KPP, p.factAddress as 'Фактический адрес', c.purchaseNumber as 'Номер документа', c.docNumber as 'Вид документа', p.regNum as 'Рег. номер'
-                from applicationInfo a, commonInfo c, protocolPublisherInfo p, protocolInfo pr
-                where c.id = a.id and c.id = p.id and c.id = pr.id and a.appDT between '" + comboBox1.Text + "' and '2052.30.12'";
+                        distinct(p.fullName) as 'Полное наименование', pr.commissionName as 'Название комиссии', a.finalPrice as 'Цена',  a.appDT as 'Дата сделки', c.docPublishDTInEIS as 'Дата публикации документа',
+                        p.INN, p.KPP, p.factAddress as 'Фактический адрес', c.purchaseNumber as 'Номер документа', c.docNumber as 'Вид документа', p.regNum as 'Рег. номер'
+                            from applicationInfo a, commonInfo c, protocolPublisherInfo p, protocolInfo pr
+                            where c.id = a.id and c.id = p.id and c.id = pr.id and a.appDT >= '" + comboBox1.Text + "' order by a.appDT";
                 }
             }
             try
@@ -277,7 +278,7 @@ between '" + comboBox1.Text + "' and '" + comboBox2.Text + "' and c.docPublishDT
             if (comboBox3.Text != "")
             {
                 query_cmb3_sort = @"select
-                    distinct(p.fullName) as 'Полное наименование', pr.commissionName as 'Название комиссии', a.finalPrice as 'Цена',  a.appDT as 'Дата публикации', c.docPublishDTInEIS as 'Дата оплаты',
+                    p.fullName as 'Полное наименование', pr.commissionName as 'Название комиссии', a.finalPrice as 'Цена',  a.appDT as 'Дата сделки', c.docPublishDTInEIS as 'Дата публикации документа',
                     p.INN, p.KPP, p.factAddress as 'Фактический адрес', c.purchaseNumber as 'Номер документа', c.docNumber as 'Вид документа', p.regNum as 'Рег. номер'
                     from applicationInfo a, commonInfo c, protocolPublisherInfo p, protocolInfo pr
                     where c.id = a.id and c.id = p.id and c.id = pr.id and c.docNumber = '" + comboBox3.Text + "'";
@@ -285,11 +286,11 @@ between '" + comboBox1.Text + "' and '" + comboBox2.Text + "' and c.docPublishDT
             else
             {
                 query_cmb3_sort = @"select
-	                    distinct(p.fullName) as 'Полное наименование', 
+	                    p.fullName as 'Полное наименование', 
 	                    pr.commissionName as 'Название комиссии', 
 	                    a.finalPrice as 'Цена',  
-	                    a.appDT as 'Дата публикации', 
-	                    c.docPublishDTInEIS as 'Дата оплаты',  
+	                    a.appDT as 'Дата сделки', 
+	                    c.docPublishDTInEIS as 'Дата публикации документа',  
 	                    p.INN, p.KPP, 
 	                    p.factAddress as 'Фактический адрес', 
 	                    c.purchaseNumber as 'Номер документа', 
@@ -349,20 +350,21 @@ between '" + comboBox1.Text + "' and '" + comboBox2.Text + "' and c.docPublishDT
             if (comboBox4.Text != "")
             {
                 query_cmb4_sort = @"select
-                    distinct(x.typeXml) as 'Тип протокола', p.fullName as 'Полное наименование', pr.commissionName as 'Название комиссии', a.finalPrice as 'Цена', 
-                    a.appDT as 'Дата публикации', c.docPublishDTInEIS as 'Дата оплаты',
+                    x.typeXml as 'Тип протокола', p.fullName as 'Полное наименование', pr.commissionName as 'Название комиссии', a.finalPrice as 'Цена', 
+                    a.appDT as 'Дата сделки', c.docPublishDTInEIS as 'Дата публикации документа',
                     p.factAddress as 'Фактический адрес', c.docNumber as 'Вид документа'
                         from applicationInfo a, commonInfo c, protocolPublisherInfo p, protocolInfo pr, dataXml x
-                        where c.id = a.id and c.id = p.id and c.id = pr.id and x.typeXml = '" + comboBox4.Text + "'";
+                        where c.id = a.id and c.id = p.id and c.id = pr.id 
+		                and x.typeXml = '" + comboBox4.Text + "' and x.id = c.id";
             }
             else
             {
                 query_cmb4_sort = @"select
-	                    distinct(p.fullName) as 'Полное наименование', 
+	                    p.fullName as 'Полное наименование', 
 	                    pr.commissionName as 'Название комиссии', 
 	                    a.finalPrice as 'Цена',  
-	                    a.appDT as 'Дата публикации', 
-	                    c.docPublishDTInEIS as 'Дата оплаты',  
+	                    a.appDT as 'Дата сделки', 
+	                    c.docPublishDTInEIS as 'Дата публикации документа',  
 	                    p.INN, p.KPP, 
 	                    p.factAddress as 'Фактический адрес', 
 	                    c.purchaseNumber as 'Номер документа', 

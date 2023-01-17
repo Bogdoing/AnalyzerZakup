@@ -14,8 +14,8 @@ namespace AnalyzerZakup.Forms
 {
     public partial class FormReference : Form
     {
-        private const string connectionString =
-        "Data Source=DESKTOP-432U1GM\\SQLEXPRESS;Initial Catalog=AnalizeXML;Integrated Security=True;MultipleActiveResultSets=True;"; //AnalizeXML
+        private readonly string connectionString = DataApp.TxtBoxFileDB;
+        //"Data Source=DESKTOP-432U1GM\\SQLEXPRESS;Initial Catalog=AnalizeXML;Integrated Security=True;MultipleActiveResultSets=True;"; //AnalizeXML
 
         string contentTable = "";
         public FormReference(string content)

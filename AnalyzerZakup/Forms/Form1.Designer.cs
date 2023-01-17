@@ -228,7 +228,7 @@
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(216, 28);
             this.button3.TabIndex = 17;
-            this.button3.Text = "List";
+            this.button3.Text = "Просмотреть данные";
             this.button3.UseVisualStyleBackColor = true;
             this.button3.Click += new System.EventHandler(this.button3_Click);
             // 
@@ -238,16 +238,17 @@
             this.textBox_filezip.Name = "textBox_filezip";
             this.textBox_filezip.Size = new System.Drawing.Size(367, 22);
             this.textBox_filezip.TabIndex = 19;
-            this.textBox_filezip.Text = "‪D:\\files\\CODE\\C#\\Cours3_1\\CouksMakovii\\";
+            this.textBox_filezip.Text = "Data Source=DESKTOP-432U1GM\\\\SQLEXPRESS;Initial Catalog=AnalizeXML;Integrated Sec" +
+    "urity=True;MultipleActiveResultSets=True;";
             // 
             // label7
             // 
             this.label7.AutoSize = true;
             this.label7.Location = new System.Drawing.Point(16, 62);
             this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(222, 16);
+            this.label7.Size = new System.Drawing.Size(187, 16);
             this.label7.TabIndex = 20;
-            this.label7.Text = "Папка для разархивирования zip";
+            this.label7.Text = "Путь для подключения к БД";
             // 
             // Form1
             // 
