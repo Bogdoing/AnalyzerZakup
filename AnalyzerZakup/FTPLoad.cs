@@ -6,9 +6,11 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.Linq;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace AnalyzerZakup
 {
@@ -30,7 +32,7 @@ namespace AnalyzerZakup
             iStartProcess.WaitForExit(300000); // эту строку указываем, если нам надо будет ждать завершения программы определённое время
         }
 
-        public void ftp_load(string filepath, string ftp, string login, string pass, TextBox tbx, DateTime D)
+        async public void ftp_load(string filepath, string ftp, string login, string pass, System.Windows.Forms.TextBox tbx, DateTime D)
         {
 
             try
@@ -73,41 +75,14 @@ namespace AnalyzerZakup
 
                 FtpItem[] items = client.GetDirectoryList(TimeoutFTP, null);
 
-                //Regex regexmask = new Regex(@"^protocol\w*" + MyDecodeDate(D) + @"\w*_" + MyDecodeDate(D.AddDays(1)) + @"\w*.xml.zip$");
-                Regex regexmask = new Regex(@"^notification\w*" + MyDecodeDate(D) + @"\w*_" + MyDecodeDate(D.AddDays(1)) + @"\w*.xml.zip$");
-
-                FtpItem[] fitems;
-
-                foreach (FtpItem item in items)
-                {
-                    if (FtpItemType.Directory == item.ItemType)
-                    {
-                        tbx.AppendText(item.Name + "\n");
-                        //client.ChangeDirectory(TimeoutFTP, item.Name+"/protocols/currMonth");
-                        //fitems = client.GetDirectoryList(TimeoutFTP, item.Name + "/protocols/currMonth");
-                        fitems = client.GetDirectoryList(TimeoutFTP, item.Name + "/notifications/currMonth");
-                        //fitems = client.GetDirectoryList(TimeoutFTP, item.Name + "/notifications/");
-                        foreach (FtpItem fitem in fitems)
-                        {
-                            if (FtpItemType.File == fitem.ItemType)
-                            {
-                                if (regexmask.IsMatch(fitem.Name))
-                                {
-                                    //client.GetFile(TimeoutFTP, filepath + fitem.Name, item.Name + "/protocols/currMonth/" + fitem.Name);
-                                    client.GetFile(TimeoutFTP, filepath + fitem.Name, item.Name + "/notifications/currMonth/" + fitem.Name);
-                                    //client.GetFile(TimeoutFTP, filepath + fitem.Name, item.Name + "/notifications/" + fitem.Name);
-                                    tbx.AppendText(fitem.Name + "\n");
-                                }
-                            }
-                        }
-                        Array.Clear(fitems, 0, 0);
-                    }
-
-                }
-
+                await Task.Run(() => FTPDownload(items, tbx, client, TimeoutFTP, filepath, D, "notification",   "/notifications/currMonth"));
+                //await Task.Run(() => FTPDownload(items, tbx, client, TimeoutFTP, filepath, D, "protocol",       "/protocols/currMonth"));
+                //await Task.Run(() => FTPDownload(items, tbx, client, TimeoutFTP, filepath, D, "sketchplan",     "/sketchplans/currMonth"));
+                //await Task.Run(() => FTPDownload(items, tbx, client, TimeoutFTP, filepath, D, "contract",       "/contracts/currMonth"));
+                //await Task.Run(() => FTPDownload(items, tbx, client, TimeoutFTP, filepath, D, "purchasedoc",    "/purchasedocs/currMonth")); //fcsPurchaseDocsRD - разъяснения в виде doc файлов
+                //await Task.Run(() => FTPDownload(items, tbx, client, TimeoutFTP, filepath, D, "customerreport", "/customerreports/currMonth"));
                 client.Disconnect(TimeoutFTP);
                 //tbx.AppendText(DateTime.Now.ToString()+" "+"message\n");
-
             }
 
 
@@ -120,10 +95,84 @@ namespace AnalyzerZakup
             // Распаковываем архивы
 
             tbx.AppendText(DateTime.Now.ToString() + " Работает 7-ZIP\n");
-            UnZipFile("*.zip", filepath);
+            //UnZipFile("*.zip", filepath);
             tbx.AppendText(DateTime.Now.ToString() + " Отработал 7-ZIP\n");
 
 
         }
+
+        async public Task FTPDownload(FtpItem[] items, System.Windows.Forms.TextBox tbx, FtpClient client, int TimeoutFTP, string filepath, DateTime D, string fcs_file, string fcs_file_currMonth)
+        {
+            //Regex regexmask = new Regex(@"^protocol\w*" + MyDecodeDate(D) + @"\w*_" + MyDecodeDate(D.AddDays(1)) + @"\w*.xml.zip$");
+            //Regex regexmask = new Regex(fcs_file + @"\w*" + MyDecodeDate(D) + @"\w*_" + MyDecodeDate(D.AddDays(1)) + @"\w*.xml.zip$");
+            Regex regexmask = new Regex(fcs_file + @"_Vor\w*" + MyDecodeDate(D) + @"\w*_" + MyDecodeDate(D.AddDays(1)) + @"\w*.xml.zip$");
+            FtpItem[] fitems;
+
+            foreach (FtpItem item in items)
+            {
+                if (FtpItemType.Directory == item.ItemType)
+                {
+                    tbx.Invoke(new Action(() => tbx.AppendText(item.Name + "\n")));
+                    //client.ChangeDirectory(TimeoutFTP, item.Name+"/protocols/currMonth");
+                    //fitems = client.GetDirectoryList(TimeoutFTP, item.Name + "/protocols/currMonth");//fitems = client.GetDirectoryList(TimeoutFTP, item.Name + "/notifications/");
+                    fitems = client.GetDirectoryList(TimeoutFTP, item.Name + fcs_file_currMonth);
+
+                    foreach (FtpItem fitem in fitems)
+                    {
+                        if (FtpItemType.File == fitem.ItemType)
+                        {
+                            if (regexmask.IsMatch(fitem.Name))
+                            {
+                                //client.GetFile(TimeoutFTP, filepath + fitem.Name, item.Name + "/protocols/currMonth/" + fitem.Name);//client.GetFile(TimeoutFTP, filepath + fitem.Name, item.Name + "/notifications/" + fitem.Name);
+                                client.GetFile(TimeoutFTP, filepath + fitem.Name, item.Name + fcs_file_currMonth + "/" + fitem.Name);                                
+                                tbx.Invoke(new Action(() => tbx.AppendText(fitem.Name + "\n")));
+                            }
+                        }
+                    }
+                    Array.Clear(fitems, 0, 0);
+                }
+            }
+        }
+
+        private string GetMount()
+        {
+            // currDate DD:MM:GGGG
+            var currDate = DateTime.Now.ToShortDateString();
+            return currDate.Split('.')[1];
+        }
     }
 }
+////
+////Regex regexmask = new Regex(@"^protocol\w*" + MyDecodeDate(D) + @"\w*_" + MyDecodeDate(D.AddDays(1)) + @"\w*.xml.zip$");
+//Regex regexmask = new Regex(@"^notification\w*" + MyDecodeDate(D) + @"\w*_" + MyDecodeDate(D.AddDays(1)) + @"\w*.xml.zip$");
+
+//FtpItem[] fitems;
+
+//foreach (FtpItem item in items)
+//{
+//    if (FtpItemType.Directory == item.ItemType)
+//    {
+//        tbx.AppendText(item.Name + "\n");
+//        //client.ChangeDirectory(TimeoutFTP, item.Name+"/protocols/currMonth");
+//        //fitems = client.GetDirectoryList(TimeoutFTP, item.Name + "/protocols/currMonth");
+//        fitems = client.GetDirectoryList(TimeoutFTP, item.Name + "/notifications/currMonth");
+//        //fitems = client.GetDirectoryList(TimeoutFTP, item.Name + "/notifications/");
+
+//        foreach (FtpItem fitem in fitems)
+//        {
+//            if (FtpItemType.File == fitem.ItemType)
+//            {
+//                if (regexmask.IsMatch(fitem.Name))
+//                {
+//                    //client.GetFile(TimeoutFTP, filepath + fitem.Name, item.Name + "/protocols/currMonth/" + fitem.Name);
+//                    client.GetFile(TimeoutFTP, filepath + fitem.Name, item.Name + "/notifications/currMonth/" + fitem.Name);
+//                    //client.GetFile(TimeoutFTP, filepath + fitem.Name, item.Name + "/notifications/" + fitem.Name);
+//                    tbx.AppendText(fitem.Name + "\n");
+
+//                }
+//            }
+//        }
+//        Array.Clear(fitems, 0, 0);
+//    }
+//}
+////
