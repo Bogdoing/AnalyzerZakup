@@ -73,7 +73,8 @@ namespace AnalyzerZakup
 
                 FtpItem[] items = client.GetDirectoryList(TimeoutFTP, null);
 
-                Regex regexmask = new Regex(@"^protocol\w*" + MyDecodeDate(D) + @"\w*_" + MyDecodeDate(D.AddDays(1)) + @"\w*.xml.zip$");
+                //Regex regexmask = new Regex(@"^protocol\w*" + MyDecodeDate(D) + @"\w*_" + MyDecodeDate(D.AddDays(1)) + @"\w*.xml.zip$");
+                Regex regexmask = new Regex(@"^notification\w*" + MyDecodeDate(D) + @"\w*_" + MyDecodeDate(D.AddDays(1)) + @"\w*.xml.zip$");
 
                 FtpItem[] fitems;
 
@@ -83,14 +84,18 @@ namespace AnalyzerZakup
                     {
                         tbx.AppendText(item.Name + "\n");
                         //client.ChangeDirectory(TimeoutFTP, item.Name+"/protocols/currMonth");
-                        fitems = client.GetDirectoryList(TimeoutFTP, item.Name + "/protocols/currMonth");
+                        //fitems = client.GetDirectoryList(TimeoutFTP, item.Name + "/protocols/currMonth");
+                        fitems = client.GetDirectoryList(TimeoutFTP, item.Name + "/notifications/currMonth");
+                        //fitems = client.GetDirectoryList(TimeoutFTP, item.Name + "/notifications/");
                         foreach (FtpItem fitem in fitems)
                         {
                             if (FtpItemType.File == fitem.ItemType)
                             {
                                 if (regexmask.IsMatch(fitem.Name))
                                 {
-                                    client.GetFile(TimeoutFTP, filepath + fitem.Name, item.Name + "/protocols/currMonth/" + fitem.Name);
+                                    //client.GetFile(TimeoutFTP, filepath + fitem.Name, item.Name + "/protocols/currMonth/" + fitem.Name);
+                                    client.GetFile(TimeoutFTP, filepath + fitem.Name, item.Name + "/notifications/currMonth/" + fitem.Name);
+                                    //client.GetFile(TimeoutFTP, filepath + fitem.Name, item.Name + "/notifications/" + fitem.Name);
                                     tbx.AppendText(fitem.Name + "\n");
                                 }
                             }
