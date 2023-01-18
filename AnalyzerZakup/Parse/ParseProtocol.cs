@@ -28,7 +28,6 @@ namespace AnalyzerZakup.Parse
                 count = int.Parse(File.ReadAllText(_fileName));  // int.Parse(string)
             }
 
-
             DataXML dataXML = new DataXML();
             ProtocolInfo protocolInfo = new ProtocolInfo();
             CommonInfo common_Info = new CommonInfo();

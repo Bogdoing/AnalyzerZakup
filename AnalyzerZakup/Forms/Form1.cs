@@ -26,7 +26,6 @@ namespace ZakupAnaliser
         public Form1()
         {
             InitializeComponent();            
-
             DataApp.TxtBoxfilepath = textBox_filepath.Text;
         }
 

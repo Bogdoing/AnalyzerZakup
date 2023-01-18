@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using System.Net.NetworkInformation;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
@@ -42,17 +43,52 @@ namespace AnalyzerZakup
         public void Parse_XML()
         {
             string[] fileEntriesAll = Directory.GetFiles(DataApp.TxtBoxfilepath);
-            string[] fileEntriesProtocol = Directory.GetFiles(DataApp.TxtBoxfilepath, "epProtocol*");
-            MessageBox.Show("Parsing" + fileEntriesProtocol);
-            // IEOK
+            
 
-            ParseProtocol parseProtocol = new ParseProtocol();
-
+            //MessageBox.Show("Parsing" + fileEntriesProtocol);
+            // IEOK           
             // Parse epProtocol IEF
+            string[] fileEntriesProtocol = Directory.GetFiles(DataApp.TxtBoxfilepath, "epProtocol*.xml");
+            ParseProtocol parseProtocol = new ParseProtocol();
             for (int i = 1; i < fileEntriesProtocol.Length; i++) // !!! i = 0 !!!
             {
                 parseProtocol.Parse_Protocol(fileEntriesProtocol[i]);
+                //MessageBox.Show("Parsing" + fileEntriesProtocol[i]);   
+            }
 
+            // Parse Contract
+            string[] fileEntriesContract = Directory.GetFiles(DataApp.TxtBoxfilepath, "contract*.xml");
+            ParseContract parseContract = new ParseContract();
+            for (int i = 1; i < fileEntriesContract.Length; i++) // !!! i = 0 !!!
+            {
+                parseContract.Parse_contracts(fileEntriesContract[i]);                
+                //MessageBox.Show("Parsing" + fileEntriesProtocol[i]);   
+            }
+
+            // Parse Cusromer 
+            string[] fileEntriesCusromer = Directory.GetFiles(DataApp.TxtBoxfilepath, "fcsCustomer*.xml");
+            ParseCustomerreport parseCustomerreport = new ParseCustomerreport();
+            for (int i = 1; i < fileEntriesContract.Length; i++) // !!! i = 0 !!!
+            {
+                parseCustomerreport.Parse_customerreport(fileEntriesCusromer[i]);
+                //MessageBox.Show("Parsing" + fileEntriesProtocol[i]);   
+            }
+
+            // Parse Purchasedoc
+            string[] fileEntriesPurchasedoc = Directory.GetFiles(DataApp.TxtBoxfilepath, "fcsPurchase*.xml");
+            ParsePurchasedoc parsePurchasedoc = new ParsePurchasedoc();
+            for (int i = 1; i < fileEntriesPurchasedoc.Length; i++) // !!! i = 0 !!!
+            {
+                parsePurchasedoc.Parse_purchasedoc(fileEntriesCusromer[i]);
+                //MessageBox.Show("Parsing" + fileEntriesProtocol[i]);   
+            }
+
+            // Parse SkathcPlan
+            string[] fileEntriesSkathcPlan = Directory.GetFiles(DataApp.TxtBoxfilepath, "SketchPlan*.xml");
+            ParseSketchplan parseSketchplan = new ParseSketchplan();
+            for (int i = 1; i < fileEntriesSkathcPlan.Length; i++) // !!! i = 0 !!!
+            {
+                parseSketchplan.Parse_sketchplan(fileEntriesCusromer[i]);
                 //MessageBox.Show("Parsing" + fileEntriesProtocol[i]);   
             }
             MessageBox.Show("End parsing all");
@@ -111,6 +147,7 @@ namespace AnalyzerZakup
             return dt;
         }
         #endregion
+
 
     }
 }                

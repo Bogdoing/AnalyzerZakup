@@ -9,6 +9,7 @@ namespace AnalyzerZakup.Parse
     internal class ParseNotification
     {
         private readonly string connectionString = DataApp.TxtBoxFileDB;
+
         public void Parse_Notification(string fileEntries)
         {
 

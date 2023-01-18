@@ -13,5 +13,6 @@ namespace AnalyzerZakup
         public static string TxtBoxFileDB = 
         "Data Source=DESKTOP-432U1GM\\SQLEXPRESS;Initial Catalog=AnalizeXml2;Integrated Security=True;MultipleActiveResultSets=True;"; //AnalizeXML
 
+
     }
 }
