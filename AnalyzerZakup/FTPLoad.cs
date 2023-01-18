@@ -75,7 +75,7 @@ namespace AnalyzerZakup
 
                 FtpItem[] items = client.GetDirectoryList(TimeoutFTP, null);
 
-                await Task.Run(() => FTPDownload(items, tbx, client, TimeoutFTP, filepath, D, "notification",   "/notifications/currMonth"));
+                //await Task.Run(() => FTPDownload(items, tbx, client, TimeoutFTP, filepath, D, "notification",   "/notifications/currMonth"));
                 //await Task.Run(() => FTPDownload(items, tbx, client, TimeoutFTP, filepath, D, "protocol",       "/protocols/currMonth"));
                 //await Task.Run(() => FTPDownload(items, tbx, client, TimeoutFTP, filepath, D, "sketchplan",     "/sketchplans/currMonth"));
                 //await Task.Run(() => FTPDownload(items, tbx, client, TimeoutFTP, filepath, D, "contract",       "/contracts/currMonth"));

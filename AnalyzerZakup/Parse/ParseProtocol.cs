@@ -1,58 +1,19 @@
-﻿using System;
+﻿using AnalyzerZakup.Data;
+using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Data.SqlClient;
-using System.Diagnostics;
 using System.IO;
-using System.IO.Compression;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Windows.Forms.VisualStyles;
 using System.Xml;
-using System.Xml.Linq;
-using AnalyzerZakup;
-using AnalyzerZakup.Data;
-using static System.Net.Mime.MediaTypeNames;
 
-namespace AnalyzerZakup
+namespace AnalyzerZakup.Parse
 {
-    internal class ParseXML
+    internal class ParseProtocol
     {
         private readonly string connectionString = DataApp.TxtBoxFileDB;
-                //"Data Source=DESKTOP-432U1GM\\SQLEXPRESS;Initial Catalog=AnalizeXml2;Integrated Security=True;MultipleActiveResultSets=True;"; //AnalizeXML
-        private DataTable CreateTable()
-        {
-            //создаём таблицу
-            DataTable dt = new DataTable("Data");
-            //создаём три колонки
-            DataColumn colID = new DataColumn("Id", typeof(Int32));
-            DataColumn externalId = new DataColumn("externalId", typeof(String));
-            DataColumn foundationDocNumber = new DataColumn("foundationDocNumber", typeof(Int32));
-            //добавляем колонки в таблицу
-            dt.Columns.Add(colID);
-            dt.Columns.Add(externalId);
-            dt.Columns.Add(foundationDocNumber);
-            return dt;
-        }
-
-        public void Parse_XML()
-        {
-            string[] fileEntriesAll = Directory.GetFiles(DataApp.TxtBoxfilepath);
-            string[] fileEntriesProtocol = Directory.GetFiles(DataApp.TxtBoxfilepath, "epProtocol*");
-            MessageBox.Show("Parsing" + fileEntriesProtocol);
-            // IEOK
-
-            // Parse epProtocol IEF
-            for (int i = 1; i < fileEntriesProtocol.Length; i++) // !!! i = 0 !!!
-            {
-                Parse_Protocol(fileEntriesProtocol[i]);
-
-                //MessageBox.Show("Parsing" + fileEntriesProtocol[i]);   
-            }
-            MessageBox.Show("End parsing all");
-        }
         #region PARSEFILE
         public void Parse_Protocol(string fileEntries)
         {
@@ -152,9 +113,9 @@ namespace AnalyzerZakup
                         SqlCommand command = new SqlCommand(db_commonInfo, connection);
                         command.Connection.Open();
 
-                        command.Parameters.AddWithValue("@purchaseNumber",      common_Info.commonInfo_purchaseNumber);
-                        command.Parameters.AddWithValue("@docNumber",           common_Info.commonInfo_docNumber);
-                        command.Parameters.AddWithValue("@docPublishDTInEIS",   DateTime.Parse(common_Info.commonInfo_publishDTInEIS));
+                        command.Parameters.AddWithValue("@purchaseNumber", common_Info.commonInfo_purchaseNumber);
+                        command.Parameters.AddWithValue("@docNumber", common_Info.commonInfo_docNumber);
+                        command.Parameters.AddWithValue("@docPublishDTInEIS", DateTime.Parse(common_Info.commonInfo_publishDTInEIS));
                         int result = command.ExecuteNonQuery();
 
                         if (result < 0)
@@ -203,11 +164,11 @@ namespace AnalyzerZakup
                     {
                         SqlCommand command = new SqlCommand(db_protocolPublisherInfoo, connection);
                         command.Connection.Open();
-                        command.Parameters.AddWithValue("@regNum",      protocolPublisherInfo.protocol_regNum);
-                        command.Parameters.AddWithValue("@fullName",    protocolPublisherInfo.protocol_fullName);
+                        command.Parameters.AddWithValue("@regNum", protocolPublisherInfo.protocol_regNum);
+                        command.Parameters.AddWithValue("@fullName", protocolPublisherInfo.protocol_fullName);
                         command.Parameters.AddWithValue("@factAddress", protocolPublisherInfo.protocol_factAddress);
-                        command.Parameters.AddWithValue("@INN",         protocolPublisherInfo.protocol_INN);
-                        command.Parameters.AddWithValue("@KPP",         protocolPublisherInfo.protocol_KPP);
+                        command.Parameters.AddWithValue("@INN", protocolPublisherInfo.protocol_INN);
+                        command.Parameters.AddWithValue("@KPP", protocolPublisherInfo.protocol_KPP);
                         int result = command.ExecuteNonQuery();
 
                         if (result < 0)
@@ -279,9 +240,9 @@ namespace AnalyzerZakup
                         SqlCommand command = new SqlCommand(query, connection);
                         command.Connection.Open();
 
-                        command.Parameters.AddWithValue("@appNumber",   int.Parse(applicationInfo.applicationInfo_appNumber));
-                        command.Parameters.AddWithValue("@appDT",       DateTime.Parse(applicationInfo.applicationInfo_appDT));
-                        command.Parameters.AddWithValue("@finalPrice",  applicationInfo.strTofloat(applicationInfo.applicationInfo_finalPrice));
+                        command.Parameters.AddWithValue("@appNumber", int.Parse(applicationInfo.applicationInfo_appNumber));
+                        command.Parameters.AddWithValue("@appDT", DateTime.Parse(applicationInfo.applicationInfo_appDT));
+                        command.Parameters.AddWithValue("@finalPrice", applicationInfo.strTofloat(applicationInfo.applicationInfo_finalPrice));
                         int result = command.ExecuteNonQuery();
 
                         if (result < 0)
@@ -300,11 +261,11 @@ namespace AnalyzerZakup
                     "//ns3:commissionMembers/ns3:commissionMember",
                     _namespaceManager)
                     .Count.ToString();
-                string _commissionMember_memberNumber   = string.Empty,
-                        _commissionMember_lastName      = string.Empty,
-                        _commissionMember_firstName     = string.Empty,
-                        _commissionMember_middleName    = string.Empty,
-                        _commissionMember_role_name     = string.Empty;
+                string _commissionMember_memberNumber = string.Empty,
+                        _commissionMember_lastName = string.Empty,
+                        _commissionMember_firstName = string.Empty,
+                        _commissionMember_middleName = string.Empty,
+                        _commissionMember_role_name = string.Empty;
 
                 //MessageBox.Show("commissionMember" + commissionMember);
                 for (int j = 0; j < int.Parse(commissionMember); j++)
@@ -342,11 +303,11 @@ namespace AnalyzerZakup
                             SqlCommand command = new SqlCommand(db_commissionMembers, connection);
                             command.Connection.Open();
 
-                            command.Parameters.AddWithValue("@memberNumber",    int.Parse(commissionMembers.commissionMember_memberNumber));
-                            command.Parameters.AddWithValue("@lastName",        commissionMembers.commissionMember_lastName);
-                            command.Parameters.AddWithValue("@firstName",       commissionMembers.commissionMember_firstName);
-                            command.Parameters.AddWithValue("@middleName",      commissionMembers.commissionMember_middleName);
-                            command.Parameters.AddWithValue("@commissionRole",  commissionMembers.commissionMember_role_name);
+                            command.Parameters.AddWithValue("@memberNumber", int.Parse(commissionMembers.commissionMember_memberNumber));
+                            command.Parameters.AddWithValue("@lastName", commissionMembers.commissionMember_lastName);
+                            command.Parameters.AddWithValue("@firstName", commissionMembers.commissionMember_firstName);
+                            command.Parameters.AddWithValue("@middleName", commissionMembers.commissionMember_middleName);
+                            command.Parameters.AddWithValue("@commissionRole", commissionMembers.commissionMember_role_name);
                             command.Parameters.AddWithValue("@protocolInfo_id", protocolInfo.id);
                             int result = command.ExecuteNonQuery();
 
@@ -398,76 +359,5 @@ namespace AnalyzerZakup
             }
         }
         #endregion
-
-        #region TESTCODE
-        public DataTable ReadXml()
-        {
-            DataTable dt = null;
-            string[] fileEntries = Directory.GetFiles(DataApp.TxtBoxfilepath);
-            for(int i = 0; i < fileEntries.Length; i++)
-            {
-                try
-                {
-                    //загружаем xml файл
-                    //XDocument xDoc = XDocument.Load(DataApp.TxtBoxfilepath + "testXML.xml");
-                    XDocument xDoc = XDocument.Load(fileEntries[i]);
-
-                    //создаём таблицу
-                    dt = CreateTable();
-                    DataRow newRow = null;
-                    //получаем все узлы в xml файле
-                    foreach (XElement elm in xDoc.Descendants("friend"))
-                    {
-                        //создаём новую запись
-                        newRow = dt.NewRow();
-                        //проверяем наличие атрибутов (если требуется)
-                        if (elm.HasAttributes)
-                        {
-                            //проверяем наличие атрибута id
-                            if (elm.Attribute("id") != null)
-                            {
-                                //получаем значение атрибута
-                                newRow["id"] = int.Parse(elm.Attribute("id").Value);
-                            }
-                        }
-                        //проверяем наличие xml элемента name
-                        if (elm.Element("name") != null)
-                        {
-                            //получаем значения элемента name
-                            newRow["name"] = elm.Element("name").Value;
-                        }
-                        if (elm.Element("age") != null)
-                        {
-                            newRow["age"] = int.Parse(elm.Element("age").Value);
-                        }
-                        //добавляем новую запись в таблицу
-                        dt.Rows.Add(newRow);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.Message);
-                }
-            }
-            return dt;
-        }
-        #endregion
-
     }
-}                //if (fileEntries[i].StartsWith("f")) // (person.ToUpper().StartsWith("T"))
-                 //{
-                 //    MessageBox.Show("f - " + fileEntries[i]);
-                 //}
-                 //MessageBox.Show("any file - " + fileEntries[i]);
-                 //var _id = docXML.DocumentElement.SelectNodes("//ns9:id", _namespaceManager)[0].InnerText;
-
-//var _foundationDocNumber = docXML.DocumentElement.SelectNodes(
-//    "//ns9:foundationDocInfo/ns9:foundationDocNumber",
-//    _namespaceManager)[0]
-//    .InnerText;
-
-// commonInfo all
-//common_Info.commonInfo = docXML.DocumentElement.SelectNodes(
-//    "//ns9:commonInfo",
-//    _namespaceManager)[0]
-//    .InnerText;
+}

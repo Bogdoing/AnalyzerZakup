@@ -163,7 +163,8 @@
       <DependentUpon>FormReference.cs</DependentUpon>
     </Compile>
     <Compile Include="FTPLoad.cs" />
-    <Compile Include="ParseXML.cs" />
+    <Compile Include="Parse\ParseProtocol.cs" />
+    <Compile Include="Parse\ParseXML.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UpZip.cs" />
