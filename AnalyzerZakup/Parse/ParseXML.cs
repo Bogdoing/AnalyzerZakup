@@ -68,7 +68,7 @@ namespace AnalyzerZakup
             // Parse Cusromer 
             string[] fileEntriesCusromer = Directory.GetFiles(DataApp.TxtBoxfilepath, "fcsCustomer*.xml");
             ParseCustomerreport parseCustomerreport = new ParseCustomerreport();
-            for (int i = 1; i < fileEntriesContract.Length; i++) // !!! i = 0 !!!
+            for (int i = 1; i < fileEntriesCusromer.Length; i++) // !!! i = 0 !!!
             {
                 parseCustomerreport.Parse_customerreport(fileEntriesCusromer[i]);
                 //MessageBox.Show("Parsing" + fileEntriesProtocol[i]);   
@@ -79,7 +79,7 @@ namespace AnalyzerZakup
             ParsePurchasedoc parsePurchasedoc = new ParsePurchasedoc();
             for (int i = 1; i < fileEntriesPurchasedoc.Length; i++) // !!! i = 0 !!!
             {
-                parsePurchasedoc.Parse_purchasedoc(fileEntriesCusromer[i]);
+                parsePurchasedoc.Parse_purchasedoc(fileEntriesPurchasedoc[i]);
                 //MessageBox.Show("Parsing" + fileEntriesProtocol[i]);   
             }
 
@@ -88,9 +88,22 @@ namespace AnalyzerZakup
             ParseSketchplan parseSketchplan = new ParseSketchplan();
             for (int i = 1; i < fileEntriesSkathcPlan.Length; i++) // !!! i = 0 !!!
             {
-                parseSketchplan.Parse_sketchplan(fileEntriesCusromer[i]);
+                parseSketchplan.Parse_sketchplan(fileEntriesSkathcPlan[i]);
                 //MessageBox.Show("Parsing" + fileEntriesProtocol[i]);   
             }
+
+            ParseNotification parseNotification = new ParseNotification();
+            string[] fileEntriesNotification = Directory.GetFiles(DataApp.TxtBoxfilepath, "epNotificationE*.xml");            
+            for (int i = 1; i < fileEntriesNotification.Length; i++) // !!! i = 0 !!!
+            {
+                parseNotification.Parse_Notification(fileEntriesSkathcPlan[i]);   
+            }
+            string[] fileEntriesClarification = Directory.GetFiles(DataApp.TxtBoxfilepath, "epClarification*.xml");
+            for (int i = 1; i < fileEntriesNotification.Length; i++) // !!! i = 0 !!!
+            {
+                parseNotification.Parse_Clarification(fileEntriesClarification[i]);   
+            }
+
             MessageBox.Show("End parsing all");
         }
 

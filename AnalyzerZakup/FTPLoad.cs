@@ -75,12 +75,12 @@ namespace AnalyzerZakup
 
                 FtpItem[] items = client.GetDirectoryList(TimeoutFTP, null);
 
-                await Task.Run(() => FTPDownload(items, tbx, client, TimeoutFTP, filepath, D, "notification",   "/notifications/currMonth"));
-                await Task.Run(() => FTPDownload(items, tbx, client, TimeoutFTP, filepath, D, "protocol",       "/protocols/currMonth"));
-                await Task.Run(() => FTPDownload(items, tbx, client, TimeoutFTP, filepath, D, "sketchplan",     "/sketchplans/currMonth"));
-                await Task.Run(() => FTPDownload(items, tbx, client, TimeoutFTP, filepath, D, "contract",       "/contracts/currMonth"));
-                await Task.Run(() => FTPDownload(items, tbx, client, TimeoutFTP, filepath, D, "purchasedoc",    "/purchasedocs/currMonth")); //fcsPurchaseDocsRD - разъяснения в виде doc файлов
-                await Task.Run(() => FTPDownload(items, tbx, client, TimeoutFTP, filepath, D, "customerreport", "/customerreports/currMonth"));
+                //await Task.Run(() => FTPDownload(items, tbx, client, TimeoutFTP, filepath, D, "notification",   "/notifications/currMonth"));
+                //await Task.Run(() => FTPDownload(items, tbx, client, TimeoutFTP, filepath, D, "protocol",       "/protocols/currMonth"));
+                //await Task.Run(() => FTPDownload(items, tbx, client, TimeoutFTP, filepath, D, "sketchplan",     "/sketchplans/currMonth"));
+                //await Task.Run(() => FTPDownload(items, tbx, client, TimeoutFTP, filepath, D, "contract",       "/contracts/currMonth"));
+                //await Task.Run(() => FTPDownload(items, tbx, client, TimeoutFTP, filepath, D, "purchasedoc",    "/purchasedocs/currMonth")); //fcsPurchaseDocsRD - разъяснения в виде doc файлов
+                //await Task.Run(() => FTPDownload(items, tbx, client, TimeoutFTP, filepath, D, "customerreport", "/customerreports/currMonth"));
                 client.Disconnect(TimeoutFTP);
                 //tbx.AppendText(DateTime.Now.ToString()+" "+"message\n");
             }
