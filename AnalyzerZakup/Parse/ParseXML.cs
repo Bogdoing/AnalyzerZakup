@@ -49,6 +49,7 @@ namespace AnalyzerZakup
             // IEOK           
             // Parse epProtocol IEF
             string[] fileEntriesProtocol = Directory.GetFiles(DataApp.TxtBoxfilepath, "epProtocol*.xml");
+            //foreach (string file in fileEntriesProtocol) MessageBox.Show(file + "");
             ParseProtocol parseProtocol = new ParseProtocol();
             for (int i = 1; i < fileEntriesProtocol.Length; i++) // !!! i = 0 !!!
             {
@@ -58,6 +59,7 @@ namespace AnalyzerZakup
 
             // Parse Contract
             string[] fileEntriesContract = Directory.GetFiles(DataApp.TxtBoxfilepath, "contract*.xml");
+            //foreach (string file in fileEntriesContract) MessageBox.Show(file + "");
             ParseContract parseContract = new ParseContract();
             for (int i = 1; i < fileEntriesContract.Length; i++) // !!! i = 0 !!!
             {
@@ -67,6 +69,7 @@ namespace AnalyzerZakup
 
             // Parse Cusromer 
             string[] fileEntriesCusromer = Directory.GetFiles(DataApp.TxtBoxfilepath, "fcsCustomer*.xml");
+            //foreach (string file in fileEntriesCusromer) MessageBox.Show(file + "");
             ParseCustomerreport parseCustomerreport = new ParseCustomerreport();
             for (int i = 1; i < fileEntriesCusromer.Length; i++) // !!! i = 0 !!!
             {
@@ -76,6 +79,7 @@ namespace AnalyzerZakup
 
             // Parse Purchasedoc
             string[] fileEntriesPurchasedoc = Directory.GetFiles(DataApp.TxtBoxfilepath, "fcsPurchase*.xml");
+            //foreach (string file in fileEntriesPurchasedoc) MessageBox.Show(file + "");
             ParsePurchasedoc parsePurchasedoc = new ParsePurchasedoc();
             for (int i = 1; i < fileEntriesPurchasedoc.Length; i++) // !!! i = 0 !!!
             {
@@ -85,6 +89,7 @@ namespace AnalyzerZakup
 
             // Parse SkathcPlan
             string[] fileEntriesSkathcPlan = Directory.GetFiles(DataApp.TxtBoxfilepath, "SketchPlan*.xml");
+            //foreach (string file in fileEntriesSkathcPlan) MessageBox.Show(file + "")
             ParseSketchplan parseSketchplan = new ParseSketchplan();
             for (int i = 1; i < fileEntriesSkathcPlan.Length; i++) // !!! i = 0 !!!
             {
@@ -93,12 +98,14 @@ namespace AnalyzerZakup
             }
 
             ParseNotification parseNotification = new ParseNotification();
-            string[] fileEntriesNotification = Directory.GetFiles(DataApp.TxtBoxfilepath, "epNotificationE*.xml");            
+            string[] fileEntriesNotification = Directory.GetFiles(DataApp.TxtBoxfilepath, "epNotificationE*.xml");
+            //foreach (string file in fileEntriesNotification) MessageBox.Show(file + "");
             for (int i = 1; i < fileEntriesNotification.Length; i++) // !!! i = 0 !!!
             {
                 parseNotification.Parse_Notification(fileEntriesSkathcPlan[i]);   
             }
             string[] fileEntriesClarification = Directory.GetFiles(DataApp.TxtBoxfilepath, "epClarification*.xml");
+            //foreach (string file in fileEntriesClarification) MessageBox.Show(file + "");
             for (int i = 1; i < fileEntriesNotification.Length; i++) // !!! i = 0 !!!
             {
                 parseNotification.Parse_Clarification(fileEntriesClarification[i]);   

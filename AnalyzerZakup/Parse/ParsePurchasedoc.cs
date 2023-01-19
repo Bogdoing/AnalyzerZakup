@@ -1,4 +1,5 @@
 ﻿using AnalyzerZakup.Data;
+using AnalyzerZakup.Function;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
@@ -14,12 +15,13 @@ namespace AnalyzerZakup.Parse
     {
         private readonly string connectionString = DataApp.TxtBoxFileDB;
 
+        Search search = new Search();
+        DataXML dataXML = new DataXML();
+
         public void Parse_purchasedoc(string fileEntries)
         {
             XmlDocument docXML = new XmlDocument(); // XML-документ
             docXML.Load(fileEntries); // загрузить XML
-
-            DataXML dataXML = new DataXML();
 
             XmlNamespaceManager _namespaceManager = new XmlNamespaceManager(docXML.NameTable);
             _namespaceManager.AddNamespace("ns", "http://zakupki.gov.ru/oos/types/1");
@@ -44,26 +46,50 @@ namespace AnalyzerZakup.Parse
 
                 dataXML.fileXml = fileEntries;
 
-                string query =  // ДРУГОЙ НУЖЕН
-                @"DECLARE @fileXml xml; 
+                string query = @"DECLARE @fileXml xml; 
                         SELECT @fileXml = (SELECT * FROM OPENROWSET(BULK '" + dataXML.fileXml + "', SINGLE_BLOB) as [xml])" +
-                        "insert into dataXml(fileXml, typeXml)" +
-                        "values (@fileXml, @typeXml)";
+                        "insert into dataXml(fileXml, typeXml, nameFile, id)" +
+                        "values (@fileXml, @typeXml, @nameFile, @id)";
                 try
                 {
-                    using (SqlConnection connection = new SqlConnection(connectionString))
-                    {
-                        SqlCommand command = new SqlCommand(query, connection);
-                        command.Connection.Open();
-                        string[] test = dataXML.fileXml.Split('\\');
-                        string test2 = test[test.Length - 1];
-                        dataXML.fileType = test2.Split('_')[0];
-                        command.Parameters.AddWithValue("@typeXml", dataXML.fileType);
-                        command.Parameters.AddWithValue("@id", dataXML.id);
+                    string[] NameFilestrList = dataXML.fileXml.Split('\\');
+                    string NameFilestr = NameFilestrList[NameFilestrList.Length - 1];
+                    dataXML.fileType = NameFilestr.Split('_')[0];
 
-                        int result = command.ExecuteNonQuery();
-                        if (result < 0) MessageBox.Show("Ошибка добавления строки в базу данных! " + result.ToString());
+                    string[] test = dataXML.fileXml.Split('\\');
+                    dataXML.nameFile = test[test.Length - 1];
+
+                    List<string> dbFilename = search.SearchDB();
+                    //MessageBox.Show(fileEntries + "");
+                    if (search.FiendList(dataXML.nameFile, dbFilename))
+                    {
+                        using (SqlConnection connection = new SqlConnection(connectionString))
+                        {
+                            SqlCommand command = new SqlCommand(query, connection);
+                            command.Connection.Open();
+                            //MessageBox.Show("db1 namefile" + dataXML.nameFile);
+                            command.Parameters.AddWithValue("@typeXml", dataXML.fileType);
+                            command.Parameters.AddWithValue("@id", dataXML.id);
+                            command.Parameters.AddWithValue("@nameFile", dataXML.nameFile);
+
+                            int result = command.ExecuteNonQuery();
+                            if (result < 0) MessageBox.Show("Ошибка добавления строки в базу данных! " + result.ToString());
+                        }
                     }
+                    else { MessageBox.Show("db have fhis file - " + fileEntries); }
+                    //using (SqlConnection connection = new SqlConnection(connectionString))
+                    //{
+                    //    SqlCommand command = new SqlCommand(query, connection);
+                    //    command.Connection.Open();
+                    //    string[] test = dataXML.fileXml.Split('\\');
+                    //    string test2 = test[test.Length - 1];
+                    //    dataXML.fileType = test2.Split('_')[0];
+                    //    command.Parameters.AddWithValue("@typeXml", dataXML.fileType);
+                    //    command.Parameters.AddWithValue("@id", dataXML.id);
+
+                    //    int result = command.ExecuteNonQuery();
+                    //    if (result < 0) MessageBox.Show("Ошибка добавления строки в базу данных! " + result.ToString());
+                    //}
                 }
                 catch (Exception ex) { MessageBox.Show(ex.Message, "error db", MessageBoxButtons.OK, MessageBoxIcon.Information); }
 

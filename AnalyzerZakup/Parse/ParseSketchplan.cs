@@ -1,4 +1,5 @@
 ﻿using AnalyzerZakup.Data;
+using AnalyzerZakup.Function;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -18,7 +19,7 @@ namespace AnalyzerZakup.Parse
         private readonly string connectionString = DataApp.TxtBoxFileDB;
 
         DataXML dataXML = new DataXML();
-        bool flag = true;
+        Search search = new Search();
 
         public void Parse_sketchplan(string fileEntries)
         {
@@ -44,12 +45,10 @@ namespace AnalyzerZakup.Parse
             try
             {
                 dataXML.id = int.Parse(docXML.GetElementsByTagName("id")[0].InnerText);
-                //MessageBox.Show(dataXML.id + "");
 
                 dataXML.fileXml = fileEntries;
 
-                string query =  // ДРУГОЙ НУЖЕН
-                @"DECLARE @fileXml xml; 
+                string query = @"DECLARE @fileXml xml; 
                         SELECT @fileXml = (SELECT * FROM OPENROWSET(BULK '" + dataXML.fileXml + "', SINGLE_BLOB) as [xml])" +
                         "insert into dataXml(fileXml, typeXml, nameFile, id)" +
                         "values (@fileXml, @typeXml, @nameFile, @id)";
@@ -63,10 +62,9 @@ namespace AnalyzerZakup.Parse
                     dataXML.nameFile = test[test.Length - 1];
 
 
-                    List<string> dbFilename = SearchDB(); //!
-                    //FiendList(fileEntries, dbFilename);
-                    MessageBox.Show(fileEntries + "");
-                    if (FiendList(dataXML.nameFile, dbFilename))
+                    List<string> dbFilename = search.SearchDB();
+                    //MessageBox.Show(fileEntries + "");
+                    if (search.FiendList(dataXML.nameFile, dbFilename))
                     {
                         using (SqlConnection connection = new SqlConnection(connectionString))
                         {
@@ -88,39 +86,7 @@ namespace AnalyzerZakup.Parse
             }
             catch (Exception ex) { MessageBox.Show(ex.Message, "error parse contract", MessageBoxButtons.OK, MessageBoxIcon.Information); }
         }
-        private List<string> SearchDB()
-        {
-            List<string> columnData = new List<string>();
 
-            using (SqlConnection connection = new SqlConnection(connectionString))
-            {
-                connection.Open();
-                string query = "select nameFile from dataXml"; // "SELECT Column1 FROM Table1"
-                //int count = 0;
-                using (SqlCommand command = new SqlCommand(query, connection))
-                {
-                    using (SqlDataReader reader = command.ExecuteReader())
-                    {
-                        while (reader.Read())
-                        {
-                            //count++;
-                            //MessageBox.Show(reader.GetString(0) + "| count = " + count);
-                            columnData.Add(reader.GetString(0));
-                        }
-                    }
-                }
-            }
-            return columnData;
-        }
-        private bool FiendList(string filename, List<string> columnData)
-        {
-            bool flag = true;
-            for (int i = 0; i < columnData.Count; i++)
-            {
-                if (filename == columnData[i]) { flag = false; }
-            }
-            return flag;
-        }
 
     }
 }

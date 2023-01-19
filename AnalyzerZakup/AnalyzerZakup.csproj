@@ -163,6 +163,7 @@
       <DependentUpon>FormReference.cs</DependentUpon>
     </Compile>
     <Compile Include="FTPLoad.cs" />
+    <Compile Include="Function\Search.cs" />
     <Compile Include="Parse\ParseContract.cs" />
     <Compile Include="Parse\ParseCustomerreport.cs" />
     <Compile Include="Parse\ParseNotification.cs" />
