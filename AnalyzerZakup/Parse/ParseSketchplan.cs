@@ -17,12 +17,13 @@ namespace AnalyzerZakup.Parse
     {
         private readonly string connectionString = DataApp.TxtBoxFileDB;
 
+        DataXML dataXML = new DataXML();
+        bool flag = true;
+
         public void Parse_sketchplan(string fileEntries)
         {
             XmlDocument docXML = new XmlDocument(); // XML-документ
             docXML.Load(fileEntries); // загрузить XML
-
-            DataXML dataXML = new DataXML();
 
             XmlNamespaceManager _namespaceManager = new XmlNamespaceManager(docXML.NameTable);
             _namespaceManager.AddNamespace("ns", "http://zakupki.gov.ru/oos/types/1");
@@ -54,69 +55,73 @@ namespace AnalyzerZakup.Parse
                         "values (@fileXml, @typeXml, @nameFile, @id)";
                 try
                 {
-                    if (BoolFile(fileEntries))
+                    string[] NameFilestrList = dataXML.fileXml.Split('\\');
+                    string NameFilestr = NameFilestrList[NameFilestrList.Length - 1];
+                    dataXML.fileType = NameFilestr.Split('_')[0];
+
+                    string[] test = dataXML.fileXml.Split('\\');
+                    dataXML.nameFile = test[test.Length - 1];
+
+
+                    List<string> dbFilename = SearchDB(); //!
+                    //FiendList(fileEntries, dbFilename);
+                    MessageBox.Show(fileEntries + "");
+                    if (FiendList(dataXML.nameFile, dbFilename))
                     {
                         using (SqlConnection connection = new SqlConnection(connectionString))
                         {
                             SqlCommand command = new SqlCommand(query, connection);
                             command.Connection.Open();
-                            string[] test = dataXML.fileXml.Split('\\');
-                            string test2 = test[test.Length - 1];
-                            dataXML.fileType = test2.Split('_')[0];
+                            //MessageBox.Show("db1 namefile" + dataXML.nameFile);
                             command.Parameters.AddWithValue("@typeXml", dataXML.fileType);
                             command.Parameters.AddWithValue("@id", dataXML.id);
-                            command.Parameters.AddWithValue("@nameFile", fileEntries);
+                            command.Parameters.AddWithValue("@nameFile", dataXML.nameFile);
 
                             int result = command.ExecuteNonQuery();
                             if (result < 0) MessageBox.Show("Ошибка добавления строки в базу данных! " + result.ToString());
                         }
                     }
-                    else
-                    {
-
-                    }
+                    else { MessageBox.Show("db have fhis file - " + fileEntries); }
                 }
                 catch (Exception ex) { MessageBox.Show(ex.Message, "error db", MessageBoxButtons.OK, MessageBoxIcon.Information); }
 
             }
             catch (Exception ex) { MessageBox.Show(ex.Message, "error parse contract", MessageBoxButtons.OK, MessageBoxIcon.Information); }
         }
-
-        private bool BoolFile(string filename)
+        private List<string> SearchDB()
         {
-            bool result = false;
-            string sqlExpression = "SELECT nameFile FROM dataXml";
-            try 
-            {
-                using (SqlConnection connection = new SqlConnection(connectionString))
-                {
-                    connection.Open();
-                    SqlCommand command = new SqlCommand(sqlExpression, connection);
-                    //SqlDataReader reader = command.ExecuteReader();
+            List<string> columnData = new List<string>();
 
-                    DataTable dt = new DataTable();
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                connection.Open();
+                string query = "select nameFile from dataXml"; // "SELECT Column1 FROM Table1"
+                //int count = 0;
+                using (SqlCommand command = new SqlCommand(query, connection))
+                {
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
-                        dt.Load(reader);
-                        
-                        var rstb = dt.AsEnumerable().Select(se => new NameFileClass() { NameFile = se.Field<object>(filename).ToString().Split('\\').Last() }).ToList(); //id = se.Field<int>("id"),  lastname = se.Field<string>("Фамилия")
-                        rstb = dt.AsEnumerable().Select(se => new NameFileClass() { NameFile = se.Field<object>(filename).ToString().Split('\\').Last() }).ToList(); //id = se.Field<int>("id"),  lastname = se.Field<string>("Фамилия")
-
-                        MessageBox.Show(rstb + "");
-                        //if (rstb != null) result = true;
-                        //else result = false;
+                        while (reader.Read())
+                        {
+                            //count++;
+                            //MessageBox.Show(reader.GetString(0) + "| count = " + count);
+                            columnData.Add(reader.GetString(0));
+                        }
                     }
                 }
-                MessageBox.Show(result + "");                
             }
-            catch (Exception ex) { MessageBox.Show(ex.Message, "error bool to fileName", MessageBoxButtons.OK, MessageBoxIcon.Information); }
-            return result;
+            return columnData;
         }
-    }
+        private bool FiendList(string filename, List<string> columnData)
+        {
+            bool flag = true;
+            for (int i = 0; i < columnData.Count; i++)
+            {
+                if (filename == columnData[i]) { flag = false; }
+            }
+            return flag;
+        }
 
-    class NameFileClass
-    {
-        public string NameFile { get; set; }
     }
 }
 

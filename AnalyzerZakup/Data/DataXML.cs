@@ -15,6 +15,7 @@ namespace AnalyzerZakup.Data
         public int id { get; set; }
         public string fileXml { get; set; }
         public string fileType { get; set; }
+        public string nameFile { get; set; }
     }
     class ProtocolInfo
     {
