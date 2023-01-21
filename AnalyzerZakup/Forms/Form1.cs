@@ -25,14 +25,57 @@ namespace ZakupAnaliser
     {
         public Form1()
         {
-            InitializeComponent();            
+            InitializeComponent();
             DataApp.TxtBoxfilepath = textBox_filepath.Text;
+
+            DataApp.checkBox1 = checkBox1.Checked;
+            DataApp.checkBox2 = checkBox2.Checked;
+            DataApp.checkBox3 = checkBox3.Checked;
+            DataApp.checkBox4 = checkBox4.Checked;
+            DataApp.checkBox5 = checkBox5.Checked;
+            DataApp.checkBox6 = checkBox6.Checked;
+
+            string[] mas2 = { "Алтайский край / Altajskij_kraj",
+                "Амурская область / Amurskaja_ob1",
+                "Архангельская область / Arkhangelskaja_obl",
+                "Астраханская область / Astrakhanskaja_obl",
+                "Байконур / Bajkonur_g",
+                "Башкиртостанская республика / Bashkortostan_Resp",
+                "Белгородская область / Belgorodskaja_obl",
+                "Бржанская область / Brjanskaja_obl",
+                "Бурятская республика / Burjatija Resp",
+                "Чеченская республика / Chechenskaja_Resp",
+                "Челябинская область / Cheljabinskaja_obl",
+                "Чукотский АО / Chukotskij_AO",
+                "Республика Чувашия Chuvashskaja_Resp",
+                "Дагестанская беспублика / Dagestan_Resp",
+                "Еврейская автономная область / Evrejskaja_Aobl",
+                "Ингушетия / Ingushetija_Resp",
+                "Иркутская область / Irkutskaja_obl",
+                "Ивановская область / Ivanovskaja_obl",
+                "Ямало-Ненецкий АО / Jamalo-Neneckij_AO",
+                "Ярославская область / Jaroslavskaja_obl",
+                "Кабардино-Балкария / Kabardino-Balkarskaja_Resp",
+                "Калининградская область / Kaliningradskaja_obl",
+                "Калмыкия / Kalmykija_Resp",
+                "Калужская область / Kaluzhskaja_obl",
+                "Камчатский край / Kamchatskij_kraj",
+                "Карачаево-Черкесия / Karachaevo-Cherkesskaja_Resp",
+                "Карелия / Karelija_Resp",
+                "Кемеровская область / Kemerovskaja_obl",
+                "Хабаровский край / Khabarovskij_kraj",
+                "Хакасия / Khakasija_Resp",
+                "Ханты-Мансийский АО - Югра / Khanty-Mansijskij_AO-Jugra_AO",
+
+                };
+            comboBox1.Items.AddRange(mas2);
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
-            //LoadFTP lftp = new LoadFTP();
-            //lftp.ftp_load(textBox_filepath.Text, textBox_ftp.Text, textBox_login.Text, textBox_password.Text, textBox1, dateTimePicker1.Value);
+            DataApp.region = comboBox1.Text;
+            //string regionD = (DataApp.region).Split('/')[1].Replace(" ", "");
+            //MessageBox.Show("|" + regionD + "|");
             FTPLoad lftp = new FTPLoad();
             lftp.ftp_load(DataApp.TxtBoxfilepath, textBox_ftp.Text, textBox_login.Text, textBox_password.Text, textBox1, dateTimePicker1.Value);
         }
@@ -59,6 +102,36 @@ namespace ZakupAnaliser
             formList.ShowDialog();
         }
 
+        private void checkBox1_CheckedChanged(object sender, EventArgs e)
+        {
+            DataApp.checkBox1 = checkBox1.Checked;
+        }
+
+        private void checkBox2_CheckedChanged(object sender, EventArgs e)
+        {
+            DataApp.checkBox2 = checkBox2.Checked;
+        }
+
+        private void checkBox3_CheckedChanged(object sender, EventArgs e)
+        {
+            DataApp.checkBox3 = checkBox3.Checked;
+        }
+
+        private void checkBox4_CheckedChanged(object sender, EventArgs e)
+        {
+            DataApp.checkBox4 = checkBox4.Checked;
+        }
+
+        private void checkBox5_CheckedChanged(object sender, EventArgs e)
+        {
+            DataApp.checkBox5 = checkBox5.Checked;
+        }
+
+        private void checkBox6_CheckedChanged(object sender, EventArgs e)
+        {
+            DataApp.checkBox6 = checkBox6.Checked;
+        }
+
         /**/
         /**/
     }
@@ -69,7 +142,7 @@ namespace ZakupAnaliser
     {
         public string MyDecodeDate(DateTime D)
         {
-        return D.Year.ToString("D4") + D.Month.ToString("D2") + D.Day.ToString("D2"); 
+            return D.Year.ToString("D4") + D.Month.ToString("D2") + D.Day.ToString("D2");
         }
 
         public void UnZipFile(String sourceFile, String destPath)
@@ -77,13 +150,13 @@ namespace ZakupAnaliser
             Process iStartProcess = new Process(); // новый процесс
             //iStartProcess.StartInfo.FileName = @"C:\Program Files\7-Zip\7z.exe"; // путь к запускаемому файлу
             iStartProcess.StartInfo.FileName = @"D:\programm\WinRar\WinRAR.exe";//D:\programm\WinRar\WinRAR.exe
-            iStartProcess.StartInfo.Arguments = " x "+destPath+sourceFile + " -y -r -o"+destPath; // эта строка указывается, если программа запускается с параметрами 
+            iStartProcess.StartInfo.Arguments = " x " + destPath + sourceFile + " -y -r -o" + destPath; // эта строка указывается, если программа запускается с параметрами 
             //iStartProcess.StartInfo.WindowStyle = ProcessWindowStyle.Hidden; // эту строку указываем, если хотим запустить программу в скрытом виде
             iStartProcess.Start(); // запускаем программу
             iStartProcess.WaitForExit(300000); // эту строку указываем, если нам надо будет ждать завершения программы определённое время
         }
 
-        public void ftp_load(string filepath, String ftp, String login, String pass, TextBox tbx, DateTime D )
+        public void ftp_load(string filepath, String ftp, String login, String pass, TextBox tbx, DateTime D)
         {
 
             try
@@ -127,7 +200,7 @@ namespace ZakupAnaliser
                 FtpItem[] items = client.GetDirectoryList(TimeoutFTP, null);
 
                 //Regex regexmask 
-                    //= new Regex(@"^protocol\w*" + MyDecodeDate(D) + @"\w*_" + MyDecodeDate(D.AddDays(1)) + @"\w*.xml.zip$");
+                //= new Regex(@"^protocol\w*" + MyDecodeDate(D) + @"\w*_" + MyDecodeDate(D.AddDays(1)) + @"\w*.xml.zip$");
                 Regex regexmask
                     = new Regex(@"^notification\w*" + MyDecodeDate(D) + @"\w*_" + MyDecodeDate(D.AddDays(1)) + @"\w*.xml.zip$");
 
@@ -145,17 +218,17 @@ namespace ZakupAnaliser
                         {
                             if (FtpItemType.File == fitem.ItemType)
                             {
-                              if (regexmask.IsMatch(fitem.Name))
-                              {
+                                if (regexmask.IsMatch(fitem.Name))
+                                {
                                     //client.GetFile(TimeoutFTP, filepath + fitem.Name, item.Name + "/protocols/currMonth/" + fitem.Name);
                                     client.GetFile(TimeoutFTP, filepath + fitem.Name, item.Name + "/notifications/currMonth/" + fitem.Name);
                                     tbx.AppendText(fitem.Name + "\n");
-                              }
+                                }
                             }
                         }
                         Array.Clear(fitems, 0, 0);
                     }
-                   
+
                 }
 
                 client.Disconnect(TimeoutFTP);
@@ -163,7 +236,7 @@ namespace ZakupAnaliser
 
             }
 
-           
+
             catch (Exception fError)
             {
                 tbx.AppendText(DateTime.Now.ToString() + " Ошибка: " + fError.Message + "\n");
@@ -175,7 +248,7 @@ namespace ZakupAnaliser
             tbx.AppendText(DateTime.Now.ToString() + " Работает 7-ZIP\n");
             UnZipFile("*.zip", filepath);
             tbx.AppendText(DateTime.Now.ToString() + " Отработал 7-ZIP\n");
-            
+
 
         }
     }
@@ -308,11 +381,11 @@ namespace ZakupAnaliser
                 {
                     // не используется!
                     String TmpSQL;
-                    TmpSQL = "insert into purchases (anum, pub_name, proto_date, pub_inn, pub_kpp, load_proto_date, winner_price) values ('"+
-                             pur.number + "', "+"'" + pur.pub_name+"', " + D.ToString()+", "+
-                             "'"+pur.pub_inn+"', "+
-                             "'"+pur.pub_kpp+"', "+
-                             D.ToString()+", "+ pur.price+")";
+                    TmpSQL = "insert into purchases (anum, pub_name, proto_date, pub_inn, pub_kpp, load_proto_date, winner_price) values ('" +
+                             pur.number + "', " + "'" + pur.pub_name + "', " + D.ToString() + ", " +
+                             "'" + pur.pub_inn + "', " +
+                             "'" + pur.pub_kpp + "', " +
+                             D.ToString() + ", " + pur.price + ")";
 
                     conn.Open();
                     NpgsqlCommand comm = new NpgsqlCommand("insert into users (fam) values ('ivanov')", conn);
@@ -325,7 +398,7 @@ namespace ZakupAnaliser
                 {
                     tbx.AppendText(DateTime.Now.ToString() + " PostgresQL error: " + fError.Message + "\n");
                 }
-              
+
 
                 tbx.AppendText(DateTime.Now.ToString() + " " + pur.number + " " + pur.price + "\n");
             }
@@ -333,18 +406,18 @@ namespace ZakupAnaliser
 
         public void xml_analyse(String filepath, TextBox tbx, DateTime D)
         {
-           // перебираем файлы по маске
+            // перебираем файлы по маске
 
-           string[] allFoundFiles;
+            string[] allFoundFiles;
 
-           NpgsqlConnection conn = new NpgsqlConnection("Server=127.0.0.1;Port=5432;User Id=custom_adm;Password=61488871;Database=custom_test;");
+            NpgsqlConnection conn = new NpgsqlConnection("Server=127.0.0.1;Port=5432;User Id=custom_adm;Password=61488871;Database=custom_test;");
 
-           allFoundFiles = Directory.GetFiles(filepath, "epProtocolEF2020Final_*.xml", SearchOption.TopDirectoryOnly);
-           foreach (string ffile in allFoundFiles)
-           {
-               Parse_ProtocolEF(ffile, tbx, conn, D);
-               
-           }
+            allFoundFiles = Directory.GetFiles(filepath, "epProtocolEF2020Final_*.xml", SearchOption.TopDirectoryOnly);
+            foreach (string ffile in allFoundFiles)
+            {
+                Parse_ProtocolEF(ffile, tbx, conn, D);
+
+            }
 
             Array.Clear(allFoundFiles, 0, 0);
         }

@@ -50,8 +50,8 @@ namespace AnalyzerZakup.Parse
 
                 string query = @"DECLARE @fileXml xml; 
                         SELECT @fileXml = (SELECT * FROM OPENROWSET(BULK '" + dataXML.fileXml + "', SINGLE_BLOB) as [xml])" +
-                        "insert into dataXml(fileXml, typeXml, nameFile, id)" +
-                        "values (@fileXml, @typeXml, @nameFile, @id)";
+                        "insert into dataXml(fileXml, typeXml, nameFile, idDoc)" +
+                        "values (@fileXml, @typeXml, @nameFile, @idDoc)";
                 try
                 {
                     string[] NameFilestrList = dataXML.fileXml.Split('\\');
@@ -72,7 +72,7 @@ namespace AnalyzerZakup.Parse
                             command.Connection.Open();
                             //MessageBox.Show("db1 namefile" + dataXML.nameFile);
                             command.Parameters.AddWithValue("@typeXml", dataXML.fileType);
-                            command.Parameters.AddWithValue("@id", dataXML.id);
+                            command.Parameters.AddWithValue("@idDoc", dataXML.id);
                             command.Parameters.AddWithValue("@nameFile", dataXML.nameFile);
 
                             int result = command.ExecuteNonQuery();

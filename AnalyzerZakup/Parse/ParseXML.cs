@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.Data.SqlTypes;
 using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
@@ -63,7 +64,16 @@ namespace AnalyzerZakup
             ParseContract parseContract = new ParseContract();
             for (int i = 1; i < fileEntriesContract.Length; i++) // !!! i = 0 !!!
             {
-                parseContract.Parse_contracts(fileEntriesContract[i]);                
+                if (fileEntriesContract[i].IndexOf("Cancel") >= 1)//(fileEntriesContract[i] == "contractProcedureCancel*.xml")
+                {
+                    MessageBox.Show("Cansel - " + fileEntriesContract[i]);
+                    parseContract.Parse_contracts_Cansel(fileEntriesContract[i]);
+                }
+                else // Parse contract proces
+                {
+                    MessageBox.Show("Else - " + fileEntriesContract[i]);
+                    parseContract.Parse_contracts(fileEntriesContract[i]);
+                }            
                 //MessageBox.Show("Parsing" + fileEntriesProtocol[i]);   
             }
 
@@ -113,62 +123,6 @@ namespace AnalyzerZakup
 
             MessageBox.Show("End parsing all");
         }
-
-        #region TESTCODE
-        public DataTable ReadXml()
-        {
-            DataTable dt = null;
-            string[] fileEntries = Directory.GetFiles(DataApp.TxtBoxfilepath);
-            for(int i = 0; i < fileEntries.Length; i++)
-            {
-                try
-                {
-                    //загружаем xml файл
-                    //XDocument xDoc = XDocument.Load(DataApp.TxtBoxfilepath + "testXML.xml");
-                    XDocument xDoc = XDocument.Load(fileEntries[i]);
-
-                    //создаём таблицу
-                    dt = CreateTable();
-                    DataRow newRow = null;
-                    //получаем все узлы в xml файле
-                    foreach (XElement elm in xDoc.Descendants("friend"))
-                    {
-                        //создаём новую запись
-                        newRow = dt.NewRow();
-                        //проверяем наличие атрибутов (если требуется)
-                        if (elm.HasAttributes)
-                        {
-                            //проверяем наличие атрибута id
-                            if (elm.Attribute("id") != null)
-                            {
-                                //получаем значение атрибута
-                                newRow["id"] = int.Parse(elm.Attribute("id").Value);
-                            }
-                        }
-                        //проверяем наличие xml элемента name
-                        if (elm.Element("name") != null)
-                        {
-                            //получаем значения элемента name
-                            newRow["name"] = elm.Element("name").Value;
-                        }
-                        if (elm.Element("age") != null)
-                        {
-                            newRow["age"] = int.Parse(elm.Element("age").Value);
-                        }
-                        //добавляем новую запись в таблицу
-                        dt.Rows.Add(newRow);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.Message);
-                }
-            }
-            return dt;
-        }
-        #endregion
-
-
     }
 }                
 //if (fileEntries[i].StartsWith("f")) // (person.ToUpper().StartsWith("T"))

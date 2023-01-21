@@ -1,4 +1,5 @@
 ﻿using AnalyzerZakup.Data;
+using AnalyzerZakup.Function;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
@@ -15,6 +16,7 @@ namespace AnalyzerZakup.Parse
     {
         private readonly string connectionString = DataApp.TxtBoxFileDB;
         #region PARSEFILE
+        Search search = new Search();
         public void Parse_Protocol(string fileEntries)
         {
             XmlDocument docXML = new XmlDocument(); // XML-документ
@@ -322,33 +324,47 @@ namespace AnalyzerZakup.Parse
                 }
                 //protocolInfo.commissionMembersList = (List<ProtocolInfo>)commissionMembers.protocolInfo;
                 #region db DataXML
+                //ns9:id
+                dataXML.id = int.Parse(docXML.DocumentElement.SelectNodes(
+                       "//ns9:id",
+                       _namespaceManager)[0]
+                       .InnerText);
+
                 dataXML.fileXml = fileEntries;
-                query =
-                    @"DECLARE @fileXml xml;
+
+                query = @"DECLARE @fileXml xml; 
                         SELECT @fileXml = (SELECT * FROM OPENROWSET(BULK '" + dataXML.fileXml + "', SINGLE_BLOB) as [xml])" +
-                            "insert into dataXml(fileXml, typeXml)" +
-                            "values (@fileXml, @typeXml)";
+                        "insert into dataXml(fileXml, typeXml, nameFile, idDoc)" +
+                        "values (@fileXml, @typeXml, @nameFile, @idDoc)";
                 try
                 {
-                    using (SqlConnection connection = new SqlConnection(connectionString))
-                    {
-                        SqlCommand command = new SqlCommand(query, connection);
-                        command.Connection.Open();
-                        //D:\files\CODE\C#\Cours3_1\CouksMakovii\up\fcsPlacementResult_2400500000222000501_20375535.xml
-                        string[] test = dataXML.fileXml.Split('\\');
-                        string test2 = test[test.Length - 1];
-                        dataXML.fileType = test2.Split('_')[0];
-                        command.Parameters.AddWithValue("@typeXml", dataXML.fileType);
-                        int result = command.ExecuteNonQuery();
+                    string[] NameFilestrList = dataXML.fileXml.Split('\\');
+                    string NameFilestr = NameFilestrList[NameFilestrList.Length - 1];
+                    dataXML.fileType = NameFilestr.Split('_')[0];
 
-                        if (result < 0)
-                            MessageBox.Show("Ошибка добавления строки в базу данных! " + result.ToString());
+                    string[] test = dataXML.fileXml.Split('\\');
+                    dataXML.nameFile = test[test.Length - 1];
+
+                    List<string> dbFilename = search.SearchDB();
+                    //MessageBox.Show(fileEntries + "");
+                    if (search.FiendList(dataXML.nameFile, dbFilename))
+                    {
+                        using (SqlConnection connection = new SqlConnection(connectionString))
+                        {
+                            SqlCommand command = new SqlCommand(query, connection);
+                            command.Connection.Open();
+                            //MessageBox.Show("db1 namefile" + dataXML.nameFile);
+                            command.Parameters.AddWithValue("@typeXml", dataXML.fileType);
+                            command.Parameters.AddWithValue("@idDoc", dataXML.id);
+                            command.Parameters.AddWithValue("@nameFile", dataXML.nameFile);
+
+                            int result = command.ExecuteNonQuery();
+                            if (result < 0) MessageBox.Show("Ошибка добавления строки в базу данных! " + result.ToString());
+                        }
                     }
+                    else { MessageBox.Show("db have fhis file - " + fileEntries); }
                 }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.Message, "error", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                }
+                catch (Exception ex) { MessageBox.Show(ex.Message, "error db", MessageBoxButtons.OK, MessageBoxIcon.Information); }
                 #endregion
                 #endregion
             }
