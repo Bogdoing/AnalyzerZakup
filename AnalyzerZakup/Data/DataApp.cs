@@ -10,7 +10,7 @@ namespace AnalyzerZakup
     {
         public static string TxtBoxfilepath { get; set; }
 
-        public static string TxtBoxFileDB =
+        public readonly static string TxtBoxFileDB =
         "Data Source=DESKTOP-432U1GM\\SQLEXPRESS;Initial Catalog=AnalizeXml2;Integrated Security=True;MultipleActiveResultSets=True;"; //AnalizeXML
 
         public static bool checkBox1 { get; set; }
@@ -22,7 +22,8 @@ namespace AnalyzerZakup
 
         public static string region { get; set; }
 
-        public static string[] mas_resion = {
+        public readonly static string[] mas_resion = 
+        {
                 "Все регионы",
                 "Алтайский край / Altajskij_kraj",
                 "Амурская область / Amurskaja_ob1",
@@ -128,6 +129,6 @@ namespace AnalyzerZakup
                 "Ярославская область / Jaroslavskaja_obl",
                 "Якутия / Sakha_Jakutija_Resp",
 
-                };
+        };
     }
 }

@@ -62,6 +62,7 @@
             this.panel4 = new System.Windows.Forms.Panel();
             this.label7 = new System.Windows.Forms.Label();
             this.textBox2 = new System.Windows.Forms.TextBox();
+            this.button4 = new System.Windows.Forms.Button();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.panel2.SuspendLayout();
@@ -75,11 +76,12 @@
             // 
             this.textBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBox1.Location = new System.Drawing.Point(6, 439);
+            this.textBox1.Location = new System.Drawing.Point(6, 279);
             this.textBox1.Margin = new System.Windows.Forms.Padding(4);
             this.textBox1.Multiline = true;
             this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(931, 186);
+            this.textBox1.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.textBox1.Size = new System.Drawing.Size(605, 186);
             this.textBox1.TabIndex = 0;
             // 
             // textBox_filepath
@@ -123,7 +125,7 @@
             // textBox_login
             // 
             this.textBox_login.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBox_login.Location = new System.Drawing.Point(722, 29);
+            this.textBox_login.Location = new System.Drawing.Point(420, 29);
             this.textBox_login.Margin = new System.Windows.Forms.Padding(4);
             this.textBox_login.Name = "textBox_login";
             this.textBox_login.Size = new System.Drawing.Size(72, 22);
@@ -133,7 +135,7 @@
             // textBox_password
             // 
             this.textBox_password.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBox_password.Location = new System.Drawing.Point(813, 29);
+            this.textBox_password.Location = new System.Drawing.Point(511, 29);
             this.textBox_password.Margin = new System.Windows.Forms.Padding(4);
             this.textBox_password.Name = "textBox_password";
             this.textBox_password.Size = new System.Drawing.Size(65, 22);
@@ -144,7 +146,7 @@
             // 
             this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(719, 9);
+            this.label3.Location = new System.Drawing.Point(417, 9);
             this.label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(33, 16);
@@ -155,7 +157,7 @@
             // 
             this.label4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(810, 9);
+            this.label4.Location = new System.Drawing.Point(508, 9);
             this.label4.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(56, 16);
@@ -184,7 +186,7 @@
             // button1
             // 
             this.button1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.button1.Location = new System.Drawing.Point(715, 359);
+            this.button1.Location = new System.Drawing.Point(389, 199);
             this.button1.Margin = new System.Windows.Forms.Padding(4);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(190, 28);
@@ -195,7 +197,7 @@
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(664, 358);
+            this.button2.Location = new System.Drawing.Point(7, 7);
             this.button2.Margin = new System.Windows.Forms.Padding(4);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(217, 28);
@@ -219,13 +221,15 @@
             this.dateTimePicker2.Format = System.Windows.Forms.DateTimePickerFormat.Short;
             this.dateTimePicker2.Location = new System.Drawing.Point(161, 88);
             this.dateTimePicker2.Margin = new System.Windows.Forms.Padding(4);
+            this.dateTimePicker2.MaxDate = new System.DateTime(2023, 1, 21, 20, 2, 32, 0);
             this.dateTimePicker2.Name = "dateTimePicker2";
             this.dateTimePicker2.Size = new System.Drawing.Size(127, 22);
             this.dateTimePicker2.TabIndex = 14;
+            this.dateTimePicker2.Value = new System.DateTime(2023, 1, 21, 0, 0, 0, 0);
             // 
             // button3
             // 
-            this.button3.Location = new System.Drawing.Point(441, 359);
+            this.button3.Location = new System.Drawing.Point(8, 42);
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(216, 28);
             this.button3.TabIndex = 17;
@@ -310,7 +314,7 @@
             this.tabControl1.Location = new System.Drawing.Point(12, 9);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(920, 423);
+            this.tabControl1.Size = new System.Drawing.Size(594, 263);
             this.tabControl1.TabIndex = 24;
             // 
             // tabPage1
@@ -321,7 +325,7 @@
             this.tabPage1.Location = new System.Drawing.Point(4, 25);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(912, 394);
+            this.tabPage1.Size = new System.Drawing.Size(586, 234);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Загрузка данных";
             this.tabPage1.UseVisualStyleBackColor = true;
@@ -342,7 +346,7 @@
             this.panel2.Controls.Add(this.label5);
             this.panel2.Location = new System.Drawing.Point(7, 7);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(702, 345);
+            this.panel2.Size = new System.Drawing.Size(376, 185);
             this.panel2.TabIndex = 25;
             // 
             // label8
@@ -373,19 +377,20 @@
             this.panel1.Controls.Add(this.checkBox3);
             this.panel1.Controls.Add(this.checkBox5);
             this.panel1.Controls.Add(this.checkBox2);
-            this.panel1.Location = new System.Drawing.Point(715, 6);
+            this.panel1.Location = new System.Drawing.Point(389, 6);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(191, 346);
+            this.panel1.Size = new System.Drawing.Size(191, 186);
             this.panel1.TabIndex = 24;
             // 
             // tabPage2
             // 
+            this.tabPage2.Controls.Add(this.button4);
             this.tabPage2.Controls.Add(this.button2);
             this.tabPage2.Controls.Add(this.button3);
             this.tabPage2.Location = new System.Drawing.Point(4, 25);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(912, 394);
+            this.tabPage2.Size = new System.Drawing.Size(586, 234);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Аназил данных";
             this.tabPage2.UseVisualStyleBackColor = true;
@@ -395,7 +400,7 @@
             this.tabPage3.Controls.Add(this.panel3);
             this.tabPage3.Location = new System.Drawing.Point(4, 25);
             this.tabPage3.Name = "tabPage3";
-            this.tabPage3.Size = new System.Drawing.Size(912, 394);
+            this.tabPage3.Size = new System.Drawing.Size(586, 234);
             this.tabPage3.TabIndex = 2;
             this.tabPage3.Text = "Настройки";
             this.tabPage3.UseVisualStyleBackColor = true;
@@ -417,7 +422,7 @@
             this.panel3.Controls.Add(this.textBox_password);
             this.panel3.Location = new System.Drawing.Point(3, 4);
             this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(882, 386);
+            this.panel3.Size = new System.Drawing.Size(580, 226);
             this.panel3.TabIndex = 0;
             // 
             // panel4
@@ -447,15 +452,27 @@
             this.textBox2.Text = "Data Source=DESKTOP-432U1GM\\\\SQLEXPRESS;Initial Catalog=AnalizeXml2;Integrated Se" +
     "curity=True;MultipleActiveResultSets=True;";
             // 
+            // button4
+            // 
+            this.button4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.button4.Location = new System.Drawing.Point(290, 191);
+            this.button4.Name = "button4";
+            this.button4.Size = new System.Drawing.Size(290, 37);
+            this.button4.TabIndex = 18;
+            this.button4.Text = "Удалить файлы из загрузочной папки";
+            this.button4.UseVisualStyleBackColor = true;
+            this.button4.Click += new System.EventHandler(this.button4_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Info;
-            this.ClientSize = new System.Drawing.Size(941, 638);
+            this.ClientSize = new System.Drawing.Size(615, 478);
             this.Controls.Add(this.tabControl1);
             this.Controls.Add(this.textBox1);
             this.Margin = new System.Windows.Forms.Padding(4);
+            this.MinimumSize = new System.Drawing.Size(633, 525);
             this.Name = "Form1";
             this.Text = "Анализатор XML с сайта закупок";
             this.tabControl1.ResumeLayout(false);
@@ -509,6 +526,7 @@
         private System.Windows.Forms.ComboBox comboBox1;
         private System.Windows.Forms.Label label8;
         public System.Windows.Forms.CheckBox checkBox1;
+        private System.Windows.Forms.Button button4;
     }
 }
 

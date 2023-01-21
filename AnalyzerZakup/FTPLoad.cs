@@ -25,27 +25,26 @@ namespace AnalyzerZakup
         }
         async public void ftp_load(string filepath, string ftp, string login, string pass, System.Windows.Forms.TextBox tbx, DateTime D)
         {
-
             try
             {
-                // Удаляем все файлы zip
-                FileInfo[] path = new DirectoryInfo(filepath).GetFiles("protocol*.zip", SearchOption.TopDirectoryOnly);
-                foreach (FileInfo file in path)
-                {
-                    File.Delete(file.FullName);
-                }
-                // Удаляем все файлы xml
-                path = new DirectoryInfo(filepath).GetFiles("*.xml", SearchOption.TopDirectoryOnly);
-                foreach (FileInfo file in path)
-                {
-                    File.Delete(file.FullName);
-                }
-                // Удаляем все файлы sig
-                path = new DirectoryInfo(filepath).GetFiles("*.sig", SearchOption.TopDirectoryOnly);
-                foreach (FileInfo file in path)
-                {
-                    File.Delete(file.FullName);
-                }
+                //// Удаляем все файлы zip
+                //FileInfo[] path = new DirectoryInfo(filepath).GetFiles("protocol*.zip", SearchOption.TopDirectoryOnly);
+                //foreach (FileInfo file in path)
+                //{
+                //    File.Delete(file.FullName);
+                //}
+                //// Удаляем все файлы xml
+                //path = new DirectoryInfo(filepath).GetFiles("*.xml", SearchOption.TopDirectoryOnly);
+                //foreach (FileInfo file in path)
+                //{
+                //    File.Delete(file.FullName);
+                //}
+                //// Удаляем все файлы sig
+                //path = new DirectoryInfo(filepath).GetFiles("*.sig", SearchOption.TopDirectoryOnly);
+                //foreach (FileInfo file in path)
+                //{
+                //    File.Delete(file.FullName);
+                //}
 
                 //Сам клиент ФТП
                 FtpClient client = new FtpClient();
@@ -63,60 +62,38 @@ namespace AnalyzerZakup
 
                 FtpItem[] items = client.GetDirectoryList(TimeoutFTP, null);
 
-                if (DataApp.checkBox2 == true) 
-                {
-                    await Task.Run(() => FTPDownload(items, tbx, client, TimeoutFTP, filepath, D, "notification", "/notifications/currMonth")); //+
-                }
                 if (DataApp.checkBox1 == true)
-                {
-                    await Task.Run(() => FTPDownload(items, tbx, client, TimeoutFTP, filepath, D, "protocol", "/protocols/currMonth")); // +
-
-                }
-                if (DataApp.checkBox4 == true)
-                {
-                    await Task.Run(() => FTPDownload(items, tbx, client, TimeoutFTP, filepath, D, "sketchplan", "/sketchplans/currMonth")); // +
-
-                }
+                    await Task.Run(() => FTPDownload(items, tbx, client, TimeoutFTP, filepath, D, "protocol", "/protocols/currMonth"));
+                if (DataApp.checkBox2 == true) 
+                    await Task.Run(() => FTPDownload(items, tbx, client, TimeoutFTP, filepath, D, "notification", "/notifications/currMonth"));
                 if (DataApp.checkBox3 == true)
-                {
-                    await Task.Run(() => FTPDownload(items, tbx, client, TimeoutFTP, filepath, D, "contract", "/contracts/currMonth"));// +
-
-                }
+                    await Task.Run(() => FTPDownload(items, tbx, client, TimeoutFTP, filepath, D, "contract", "/contracts/currMonth"));
+                if (DataApp.checkBox4 == true)
+                    await Task.Run(() => FTPDownload(items, tbx, client, TimeoutFTP, filepath, D, "sketchplan", "/sketchplans/currMonth"));               
                 if (DataApp.checkBox5 == true)
-                {
-                    await Task.Run(() => FTPDownload(items, tbx, client, TimeoutFTP, filepath, D, "purchasedoc", "/purchasedocs/currMonth")); //документы о покупке fcsPurchaseDocsRD - разъяснения в виде doc файлов
-
-                }
+                    await Task.Run(() => FTPDownload(items, tbx, client, TimeoutFTP, filepath, D, "purchasedoc", "/purchasedocs/currMonth")); //документы о покупке fcsPurchaseDocsRD - разъяснения в виде doc файлов                
                 if (DataApp.checkBox6 == true)
-                {
                     await Task.Run(() => FTPDownload(items, tbx, client, TimeoutFTP, filepath, D, "customerreport", "/customerreports/currMonth")); //отчет клиента
-
-                }
+                
                 client.Disconnect(TimeoutFTP);
-                tbx.AppendText(DateTime.Now.ToString()+" "+"message\n");
+                tbx.AppendText(DateTime.Now.ToString() + " " + "message \n");
             }
             catch (Exception fError) { tbx.AppendText(DateTime.Now.ToString() + " Ошибка: " + fError.Message + "\n"); }
 
-            // Распаковываем архивы
-            tbx.AppendText(DateTime.Now.ToString() + " Работает 7-ZIP\n");
-            //UnZipFile("*.zip", filepath);
-            tbx.AppendText(DateTime.Now.ToString() + " Отработал 7-ZIP\n");
+            tbx.AppendText(DateTime.Now.ToString() + " Отработал Loader\n");
 
         }
 
         async public Task FTPDownload(FtpItem[] items, System.Windows.Forms.TextBox tbx, FtpClient client, int TimeoutFTP, string filepath, DateTime D, string fcs_file, string fcs_file_currMonth)
         {
             Regex regexmask = new Regex(fcs_file + @"\w*" + MyDecodeDate(D) + @"\w*_" + MyDecodeDate(D.AddDays(1)) + @"\w*.xml.zip$");
-            if (DataApp.region == "Все регионы")
+            if (DataApp.region != "Все регионы")
             {
-                //Regex regexmask = new Regex(fcs_file + @"\w*" + MyDecodeDate(D) + @"\w*_" + MyDecodeDate(D.AddDays(1)) + @"\w*.xml.zip$");
-                //MessageBox.Show("All region");
-            }
-            else
-            {
-                string region = (DataApp.region).Split('/')[1].Replace(" ", "");                
+                //MessageBox.Show("!All region");
+                string region = (DataApp.region).Split('/')[1].Replace(" ", "");
                 regexmask = new Regex(fcs_file + "_" + region + @"\w*" + MyDecodeDate(D) + @"\w*_" + MyDecodeDate(D.AddDays(1)) + @"\w*.xml.zip$");  //regexmask = new Regex(fcs_file + @"_Vor\w*" + MyDecodeDate(D) + @"\w*_" + MyDecodeDate(D.AddDays(1)) + @"\w*.xml.zip$");              
-            }            
+
+            }           
             FtpItem[] fitems;
 
             foreach (FtpItem item in items)

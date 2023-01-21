@@ -37,6 +37,12 @@ namespace ZakupAnaliser
 
 
             comboBox1.Items.AddRange(DataApp.mas_resion);
+            comboBox1.SelectedItem = "Все регионы";
+
+            dateTimePicker1.Value = DateTime.Today.AddDays(-1);
+            dateTimePicker1.MaxDate = DateTime.Today.AddDays(-1);
+
+            dateTimePicker2.MaxDate = DateTime.Today.AddDays(0);
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -96,6 +102,11 @@ namespace ZakupAnaliser
         private void checkBox6_CheckedChanged(object sender, EventArgs e)
         {
             DataApp.checkBox6 = checkBox6.Checked;
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            UpZip.delFile();
         }
 
         /**/
