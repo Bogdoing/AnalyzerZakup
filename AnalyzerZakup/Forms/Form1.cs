@@ -35,47 +35,13 @@ namespace ZakupAnaliser
             DataApp.checkBox5 = checkBox5.Checked;
             DataApp.checkBox6 = checkBox6.Checked;
 
-            string[] mas2 = { "Алтайский край / Altajskij_kraj",
-                "Амурская область / Amurskaja_ob1",
-                "Архангельская область / Arkhangelskaja_obl",
-                "Астраханская область / Astrakhanskaja_obl",
-                "Байконур / Bajkonur_g",
-                "Башкиртостанская республика / Bashkortostan_Resp",
-                "Белгородская область / Belgorodskaja_obl",
-                "Бржанская область / Brjanskaja_obl",
-                "Бурятская республика / Burjatija Resp",
-                "Чеченская республика / Chechenskaja_Resp",
-                "Челябинская область / Cheljabinskaja_obl",
-                "Чукотский АО / Chukotskij_AO",
-                "Республика Чувашия Chuvashskaja_Resp",
-                "Дагестанская беспублика / Dagestan_Resp",
-                "Еврейская автономная область / Evrejskaja_Aobl",
-                "Ингушетия / Ingushetija_Resp",
-                "Иркутская область / Irkutskaja_obl",
-                "Ивановская область / Ivanovskaja_obl",
-                "Ямало-Ненецкий АО / Jamalo-Neneckij_AO",
-                "Ярославская область / Jaroslavskaja_obl",
-                "Кабардино-Балкария / Kabardino-Balkarskaja_Resp",
-                "Калининградская область / Kaliningradskaja_obl",
-                "Калмыкия / Kalmykija_Resp",
-                "Калужская область / Kaluzhskaja_obl",
-                "Камчатский край / Kamchatskij_kraj",
-                "Карачаево-Черкесия / Karachaevo-Cherkesskaja_Resp",
-                "Карелия / Karelija_Resp",
-                "Кемеровская область / Kemerovskaja_obl",
-                "Хабаровский край / Khabarovskij_kraj",
-                "Хакасия / Khakasija_Resp",
-                "Ханты-Мансийский АО - Югра / Khanty-Mansijskij_AO-Jugra_AO",
 
-                };
-            comboBox1.Items.AddRange(mas2);
+            comboBox1.Items.AddRange(DataApp.mas_resion);
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
             DataApp.region = comboBox1.Text;
-            //string regionD = (DataApp.region).Split('/')[1].Replace(" ", "");
-            //MessageBox.Show("|" + regionD + "|");
             FTPLoad lftp = new FTPLoad();
             lftp.ftp_load(DataApp.TxtBoxfilepath, textBox_ftp.Text, textBox_login.Text, textBox_password.Text, textBox1, dateTimePicker1.Value);
         }

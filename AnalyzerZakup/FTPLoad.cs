@@ -107,17 +107,15 @@ namespace AnalyzerZakup
         async public Task FTPDownload(FtpItem[] items, System.Windows.Forms.TextBox tbx, FtpClient client, int TimeoutFTP, string filepath, DateTime D, string fcs_file, string fcs_file_currMonth)
         {
             Regex regexmask = new Regex(fcs_file + @"\w*" + MyDecodeDate(D) + @"\w*_" + MyDecodeDate(D.AddDays(1)) + @"\w*.xml.zip$");
-            if (DataApp.region == "все регионы")
+            if (DataApp.region == "Все регионы")
             {
                 //Regex regexmask = new Regex(fcs_file + @"\w*" + MyDecodeDate(D) + @"\w*_" + MyDecodeDate(D.AddDays(1)) + @"\w*.xml.zip$");
+                //MessageBox.Show("All region");
             }
             else
             {
-                //Иркутская область / Irkutskaja_obl
-                string region = (DataApp.region).Split('/')[1].Replace(" ", "");
-                //regexmask = new Regex(fcs_file + @"_Vor\w*" + MyDecodeDate(D) + @"\w*_" + MyDecodeDate(D.AddDays(1)) + @"\w*.xml.zip$");
-                regexmask = new Regex(fcs_file + "_" + region + @"\w*" + MyDecodeDate(D) + @"\w*_" + MyDecodeDate(D.AddDays(1)) + @"\w*.xml.zip$");
-                MessageBox.Show(regexmask.ToString());
+                string region = (DataApp.region).Split('/')[1].Replace(" ", "");                
+                regexmask = new Regex(fcs_file + "_" + region + @"\w*" + MyDecodeDate(D) + @"\w*_" + MyDecodeDate(D.AddDays(1)) + @"\w*.xml.zip$");  //regexmask = new Regex(fcs_file + @"_Vor\w*" + MyDecodeDate(D) + @"\w*_" + MyDecodeDate(D.AddDays(1)) + @"\w*.xml.zip$");              
             }            
             FtpItem[] fitems;
 
