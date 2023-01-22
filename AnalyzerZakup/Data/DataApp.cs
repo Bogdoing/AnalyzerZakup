@@ -11,7 +11,7 @@ namespace AnalyzerZakup
         public static string TxtBoxfilepath { get; set; }
 
         public readonly static string TxtBoxFileDB =
-        "Data Source=DESKTOP-432U1GM\\SQLEXPRESS;Initial Catalog=AnalizeXml2;Integrated Security=True;MultipleActiveResultSets=True;"; //AnalizeXML
+        "Data Source=DESKTOP-432U1GM\\SQLEXPRESS;Initial Catalog=AnalizXML3;Integrated Security=True;MultipleActiveResultSets=True;"; //AnalizeXML
 
         public static bool checkBox1 { get; set; }
         public static bool checkBox2 { get; set; }

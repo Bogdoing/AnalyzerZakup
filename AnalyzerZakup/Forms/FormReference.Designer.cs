@@ -79,7 +79,7 @@
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.dataGridView1);
             this.Name = "FormReference";
-            this.Text = "FormReference";
+            this.Text = "Состав коммисии";
             this.Load += new System.EventHandler(this.FormReference_Load);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             this.panel1.ResumeLayout(false);

@@ -16,7 +16,7 @@ namespace AnalyzerZakup.Function
             using (SqlConnection connection = new SqlConnection(DataApp.TxtBoxFileDB))
             {
                 connection.Open();
-                string query = "select nameFile from dataXml";
+                string query = "select name from document";
                 //int count = 0;
                 using (SqlCommand command = new SqlCommand(query, connection))
                 {

@@ -26,21 +26,6 @@ namespace AnalyzerZakup
     {
         private readonly string connectionString = DataApp.TxtBoxFileDB;
                 //"Data Source=DESKTOP-432U1GM\\SQLEXPRESS;Initial Catalog=AnalizeXml2;Integrated Security=True;MultipleActiveResultSets=True;"; //AnalizeXML
-        private DataTable CreateTable()
-        {
-            //создаём таблицу
-            DataTable dt = new DataTable("Data");
-            //создаём три колонки
-            DataColumn colID = new DataColumn("Id", typeof(Int32));
-            DataColumn externalId = new DataColumn("externalId", typeof(String));
-            DataColumn foundationDocNumber = new DataColumn("foundationDocNumber", typeof(Int32));
-            //добавляем колонки в таблицу
-            dt.Columns.Add(colID);
-            dt.Columns.Add(externalId);
-            dt.Columns.Add(foundationDocNumber);
-            return dt;
-        }
-
         public void Parse_XML()
         {
             string[] fileEntriesAll = Directory.GetFiles(DataApp.TxtBoxfilepath);
@@ -54,24 +39,24 @@ namespace AnalyzerZakup
             ParseProtocol parseProtocol = new ParseProtocol();
             for (int i = 1; i < fileEntriesProtocol.Length; i++) // !!! i = 0 !!!
             {
-                parseProtocol.Parse_Protocol(fileEntriesProtocol[i]);
+                //parseProtocol.Parse_Protocol(fileEntriesProtocol[i]);
                 //MessageBox.Show("Parsing" + fileEntriesProtocol[i]);   
             }
 
             // Parse Contract
-            string[] fileEntriesContract = Directory.GetFiles(DataApp.TxtBoxfilepath, "contract*.xml");
+            string[] fileEntriesContract = Directory.GetFiles(DataApp.TxtBoxfilepath, "contract*.xml"); //contract*.xml
             //foreach (string file in fileEntriesContract) MessageBox.Show(file + "");
             ParseContract parseContract = new ParseContract();
             for (int i = 1; i < fileEntriesContract.Length; i++) // !!! i = 0 !!!
             {
                 if (fileEntriesContract[i].IndexOf("Cancel") >= 1)//(fileEntriesContract[i] == "contractProcedureCancel*.xml")
                 {
-                    MessageBox.Show("Cansel - " + fileEntriesContract[i]);
-                    parseContract.Parse_contracts_Cansel(fileEntriesContract[i]);
+                    //MessageBox.Show("Cansel - " + fileEntriesContract[i]);
+                    //parseContract.Parse_contracts_Cansel(fileEntriesContract[i]);
                 }
                 else // Parse contract proces
                 {
-                    MessageBox.Show("Else - " + fileEntriesContract[i]);
+                    //MessageBox.Show("Else - " + fileEntriesContract[i]);
                     parseContract.Parse_contracts(fileEntriesContract[i]);
                 }            
                 //MessageBox.Show("Parsing" + fileEntriesProtocol[i]);   
@@ -112,13 +97,13 @@ namespace AnalyzerZakup
             //foreach (string file in fileEntriesNotification) MessageBox.Show(file + "");
             for (int i = 1; i < fileEntriesNotification.Length; i++) // !!! i = 0 !!!
             {
-                parseNotification.Parse_Notification(fileEntriesSkathcPlan[i]);   
+                //parseNotification.Parse_Notification(fileEntriesSkathcPlan[i]);   
             }
             string[] fileEntriesClarification = Directory.GetFiles(DataApp.TxtBoxfilepath, "epClarification*.xml");
             //foreach (string file in fileEntriesClarification) MessageBox.Show(file + "");
             for (int i = 1; i < fileEntriesNotification.Length; i++) // !!! i = 0 !!!
             {
-                parseNotification.Parse_Clarification(fileEntriesClarification[i]);   
+                //parseNotification.Parse_Clarification(fileEntriesClarification[i]);   
             }
 
             MessageBox.Show("End parsing all");

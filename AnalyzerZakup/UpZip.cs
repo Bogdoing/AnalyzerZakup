@@ -30,7 +30,7 @@ namespace AnalyzerZakup
                     //MessageBox.Show("Start uparhive " + i + " D.Z" + DataApp.TxtBoxFileZip + " D.f" + DataApp.TxtBoxfilepath);
                     ZipFile.ExtractToDirectory(fileEntries[i], DataApp.TxtBoxfilepath);
                 }
-                delXML();
+                //delXML();
                 delSig();
             }
             catch (Exception e)
@@ -44,7 +44,7 @@ namespace AnalyzerZakup
         public static void delFile()
         {
             delXML();
-            delZIP();
+            //delZIP();
             delSig();
             delFcs();
         }
