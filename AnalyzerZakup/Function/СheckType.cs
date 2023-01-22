@@ -34,7 +34,7 @@ namespace AnalyzerZakup.Function
                         }
                     }
                 }
-                catch (Exception ex) { MessageBox.Show(ex.Message, "error db SELECT nameType FROM typeDocument td", MessageBoxButtons.OK, MessageBoxIcon.Information); }                
+                 catch (Exception ex) { MessageBox.Show(ex.Message, "error db SELECT nameType FROM typeDocument td", MessageBoxButtons.OK, MessageBoxIcon.Information); }                
             }
             return columnData;
         }

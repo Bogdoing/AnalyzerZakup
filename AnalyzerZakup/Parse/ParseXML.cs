@@ -34,76 +34,72 @@ namespace AnalyzerZakup
             //MessageBox.Show("Parsing" + fileEntriesProtocol);
             // IEOK           
             // Parse epProtocol IEF
-            string[] fileEntriesProtocol = Directory.GetFiles(DataApp.TxtBoxfilepath, "epProtocol*.xml");
-            //foreach (string file in fileEntriesProtocol) MessageBox.Show(file + "");
+            string[] fileEntriesProtocol = Directory.GetFiles(DataApp.TxtBoxfilepath, "epProtocol*.xml");            
             ParseProtocol parseProtocol = new ParseProtocol();
-            for (int i = 1; i < fileEntriesProtocol.Length; i++) // !!! i = 0 !!!
+            foreach (string file in fileEntriesProtocol) 
             {
-                //parseProtocol.Parse_Protocol(fileEntriesProtocol[i]);
-                //MessageBox.Show("Parsing" + fileEntriesProtocol[i]);   
+                //MessageBox.Show(file + "");
+                //parseProtocol.Parse_Protocol(file);
             }
 
             // Parse Contract
-            string[] fileEntriesContract = Directory.GetFiles(DataApp.TxtBoxfilepath, "contract*.xml"); //contract*.xml
-            //foreach (string file in fileEntriesContract) MessageBox.Show(file + "");
+            string[] fileEntriesContract = Directory.GetFiles(DataApp.TxtBoxfilepath, "contract*.xml"); //contract*.xml            
             ParseContract parseContract = new ParseContract();
-            for (int i = 1; i < fileEntriesContract.Length; i++) // !!! i = 0 !!!
+            foreach (string file in fileEntriesContract) 
             {
-                if (fileEntriesContract[i].IndexOf("Cancel") >= 1)//(fileEntriesContract[i] == "contractProcedureCancel*.xml")
+                if (file.IndexOf("Cancel") >= 1)//(file == "contractProcedureCancel*.xml")
                 {
-                    //MessageBox.Show("Cansel - " + fileEntriesContract[i]);
-                    //parseContract.Parse_contracts_Cansel(fileEntriesContract[i]);
+                    //MessageBox.Show("Cansel - " + file);
+                    //parseContract.Parse_contracts_Cansel(file);
                 }
                 else // Parse contract proces
                 {
-                    //MessageBox.Show("Else - " + fileEntriesContract[i]);
-                    parseContract.Parse_contracts(fileEntriesContract[i]);
-                }            
-                //MessageBox.Show("Parsing" + fileEntriesProtocol[i]);   
+                    //MessageBox.Show("Else - " + file);
+                    parseContract.Parse_contracts(file);
+                }
+                //MessageBox.Show("Parsing" + file);  
+                //MessageBox.Show(file + ""); 
             }
 
             // Parse Cusromer 
-            string[] fileEntriesCusromer = Directory.GetFiles(DataApp.TxtBoxfilepath, "fcsCustomer*.xml");
-            //foreach (string file in fileEntriesCusromer) MessageBox.Show(file + "");
+            string[] fileEntriesCusromer = Directory.GetFiles(DataApp.TxtBoxfilepath, "fcsCustomer*.xml");            
             ParseCustomerreport parseCustomerreport = new ParseCustomerreport();
-            for (int i = 1; i < fileEntriesCusromer.Length; i++) // !!! i = 0 !!!
+            foreach (string file in fileEntriesCusromer) 
             {
-                parseCustomerreport.Parse_customerreport(fileEntriesCusromer[i]);
-                //MessageBox.Show("Parsing" + fileEntriesProtocol[i]);   
+                //MessageBox.Show(file + ""); 
+                parseCustomerreport.Parse_customerreport(file);
             }
 
             // Parse Purchasedoc
-            string[] fileEntriesPurchasedoc = Directory.GetFiles(DataApp.TxtBoxfilepath, "fcsPurchase*.xml");
-            //foreach (string file in fileEntriesPurchasedoc) MessageBox.Show(file + "");
+            string[] fileEntriesPurchasedoc = Directory.GetFiles(DataApp.TxtBoxfilepath, "fcsPurchase*.xml");            
             ParsePurchasedoc parsePurchasedoc = new ParsePurchasedoc();
-            for (int i = 1; i < fileEntriesPurchasedoc.Length; i++) // !!! i = 0 !!!
+            foreach (string file in fileEntriesPurchasedoc)
             {
-                parsePurchasedoc.Parse_purchasedoc(fileEntriesPurchasedoc[i]);
-                //MessageBox.Show("Parsing" + fileEntriesProtocol[i]);   
+                //MessageBox.Show(file + ""); 
+                parsePurchasedoc.Parse_purchasedoc(file);
             }
 
             // Parse SkathcPlan
-            string[] fileEntriesSkathcPlan = Directory.GetFiles(DataApp.TxtBoxfilepath, "SketchPlan*.xml");
-            //foreach (string file in fileEntriesSkathcPlan) MessageBox.Show(file + "")
+            string[] fileEntriesSkathcPlan = Directory.GetFiles(DataApp.TxtBoxfilepath, "SketchPlan*.xml");            
             ParseSketchplan parseSketchplan = new ParseSketchplan();
-            for (int i = 1; i < fileEntriesSkathcPlan.Length; i++) // !!! i = 0 !!!
+            foreach (string file in fileEntriesSkathcPlan) 
             {
-                parseSketchplan.Parse_sketchplan(fileEntriesSkathcPlan[i]);
-                //MessageBox.Show("Parsing" + fileEntriesProtocol[i]);   
+                //MessageBox.Show(file + "");
+                parseSketchplan.Parse_sketchplan(file);
             }
 
             ParseNotification parseNotification = new ParseNotification();
             string[] fileEntriesNotification = Directory.GetFiles(DataApp.TxtBoxfilepath, "epNotificationE*.xml");
-            //foreach (string file in fileEntriesNotification) MessageBox.Show(file + "");
-            for (int i = 1; i < fileEntriesNotification.Length; i++) // !!! i = 0 !!!
+            foreach (string file in fileEntriesNotification) 
             {
-                //parseNotification.Parse_Notification(fileEntriesSkathcPlan[i]);   
+                //MessageBox.Show(file + "");
+                parseNotification.Parse_Notification(file);
             }
             string[] fileEntriesClarification = Directory.GetFiles(DataApp.TxtBoxfilepath, "epClarification*.xml");
-            //foreach (string file in fileEntriesClarification) MessageBox.Show(file + "");
-            for (int i = 1; i < fileEntriesNotification.Length; i++) // !!! i = 0 !!!
+            foreach (string file in fileEntriesClarification)
             {
-                //parseNotification.Parse_Clarification(fileEntriesClarification[i]);   
+                //MessageBox.Show(file + "");
+                //parseNotification.Parse_Clarification(file);   
             }
 
             MessageBox.Show("End parsing all");
