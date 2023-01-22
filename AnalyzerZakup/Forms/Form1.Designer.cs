@@ -57,12 +57,12 @@
             this.comboBox1 = new System.Windows.Forms.ComboBox();
             this.panel1 = new System.Windows.Forms.Panel();
             this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.button4 = new System.Windows.Forms.Button();
             this.tabPage3 = new System.Windows.Forms.TabPage();
             this.panel3 = new System.Windows.Forms.Panel();
             this.panel4 = new System.Windows.Forms.Panel();
             this.label7 = new System.Windows.Forms.Label();
             this.textBox2 = new System.Windows.Forms.TextBox();
-            this.button4 = new System.Windows.Forms.Button();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.panel2.SuspendLayout();
@@ -197,10 +197,13 @@
             // 
             // button2
             // 
+            this.button2.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.button2.Location = new System.Drawing.Point(7, 7);
             this.button2.Margin = new System.Windows.Forms.Padding(4);
             this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(217, 28);
+            this.button2.Size = new System.Drawing.Size(277, 114);
             this.button2.TabIndex = 12;
             this.button2.Text = "Анализ содержимого XML";
             this.button2.UseVisualStyleBackColor = true;
@@ -221,7 +224,7 @@
             this.dateTimePicker2.Format = System.Windows.Forms.DateTimePickerFormat.Short;
             this.dateTimePicker2.Location = new System.Drawing.Point(161, 88);
             this.dateTimePicker2.Margin = new System.Windows.Forms.Padding(4);
-            this.dateTimePicker2.MaxDate = new System.DateTime(2023, 1, 21, 20, 2, 32, 0);
+            this.dateTimePicker2.MaxDate = new System.DateTime(2199, 12, 31, 0, 0, 0, 0);
             this.dateTimePicker2.Name = "dateTimePicker2";
             this.dateTimePicker2.Size = new System.Drawing.Size(127, 22);
             this.dateTimePicker2.TabIndex = 14;
@@ -229,9 +232,11 @@
             // 
             // button3
             // 
-            this.button3.Location = new System.Drawing.Point(8, 42);
+            this.button3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.button3.Location = new System.Drawing.Point(6, 123);
             this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(216, 28);
+            this.button3.Size = new System.Drawing.Size(278, 105);
             this.button3.TabIndex = 17;
             this.button3.Text = "Просмотреть данные";
             this.button3.UseVisualStyleBackColor = true;
@@ -395,6 +400,18 @@
             this.tabPage2.Text = "Аназил данных";
             this.tabPage2.UseVisualStyleBackColor = true;
             // 
+            // button4
+            // 
+            this.button4.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.button4.Location = new System.Drawing.Point(290, 7);
+            this.button4.Name = "button4";
+            this.button4.Size = new System.Drawing.Size(290, 221);
+            this.button4.TabIndex = 18;
+            this.button4.Text = "Удалить файлы из загрузочной папки";
+            this.button4.UseVisualStyleBackColor = true;
+            this.button4.Click += new System.EventHandler(this.button4_Click);
+            // 
             // tabPage3
             // 
             this.tabPage3.Controls.Add(this.panel3);
@@ -451,17 +468,6 @@
             this.textBox2.TabIndex = 9;
             this.textBox2.Text = "Data Source=DESKTOP-432U1GM\\\\SQLEXPRESS;Initial Catalog=AnalizeXml2;Integrated Se" +
     "curity=True;MultipleActiveResultSets=True;";
-            // 
-            // button4
-            // 
-            this.button4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.button4.Location = new System.Drawing.Point(290, 191);
-            this.button4.Name = "button4";
-            this.button4.Size = new System.Drawing.Size(290, 37);
-            this.button4.TabIndex = 18;
-            this.button4.Text = "Удалить файлы из загрузочной папки";
-            this.button4.UseVisualStyleBackColor = true;
-            this.button4.Click += new System.EventHandler(this.button4_Click);
             // 
             // Form1
             // 

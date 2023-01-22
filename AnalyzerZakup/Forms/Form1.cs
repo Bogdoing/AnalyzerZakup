@@ -42,6 +42,7 @@ namespace ZakupAnaliser
             dateTimePicker1.Value = DateTime.Today.AddDays(-1);
             dateTimePicker1.MaxDate = DateTime.Today.AddDays(-1);
 
+            dateTimePicker2.Value = DateTime.Today.AddDays(0);
             dateTimePicker2.MaxDate = DateTime.Today.AddDays(0);
         }
 

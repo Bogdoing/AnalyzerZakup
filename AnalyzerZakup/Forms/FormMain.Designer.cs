@@ -56,14 +56,14 @@
             // 
             this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
-            this.panel1.BackColor = System.Drawing.SystemColors.ActiveCaption;
+            this.panel1.BackColor = System.Drawing.SystemColors.Info;
             this.panel1.Controls.Add(this.button4);
             this.panel1.Controls.Add(this.button3);
             this.panel1.Controls.Add(this.button2);
             this.panel1.Controls.Add(this.button1);
             this.panel1.Location = new System.Drawing.Point(0, -1);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(261, 430);
+            this.panel1.Size = new System.Drawing.Size(261, 373);
             this.panel1.TabIndex = 0;
             // 
             // button4
@@ -79,7 +79,7 @@
             // button3
             // 
             this.button3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.button3.Location = new System.Drawing.Point(12, 366);
+            this.button3.Location = new System.Drawing.Point(12, 309);
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(235, 52);
             this.button3.TabIndex = 2;
@@ -118,7 +118,7 @@
             this.tabControl1.Location = new System.Drawing.Point(270, 15);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(586, 414);
+            this.tabControl1.Size = new System.Drawing.Size(508, 357);
             this.tabControl1.TabIndex = 1;
             this.tabControl1.VisibleChanged += new System.EventHandler(this.tabControl1_VisibleChanged);
             // 
@@ -128,7 +128,7 @@
             this.tabPage1.Location = new System.Drawing.Point(4, 25);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(578, 385);
+            this.tabPage1.Size = new System.Drawing.Size(500, 328);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Скрип моздания БД";
             this.tabPage1.UseVisualStyleBackColor = true;
@@ -142,7 +142,7 @@
             this.textBox1.Multiline = true;
             this.textBox1.Name = "textBox1";
             this.textBox1.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.textBox1.Size = new System.Drawing.Size(550, 376);
+            this.textBox1.Size = new System.Drawing.Size(472, 319);
             this.textBox1.TabIndex = 0;
             // 
             // tabPage2
@@ -195,20 +195,20 @@
             this.panel2.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.panel2.BackColor = System.Drawing.SystemColors.GradientInactiveCaption;
+            this.panel2.BackColor = System.Drawing.SystemColors.Window;
             this.panel2.Controls.Add(this.label2);
             this.panel2.Controls.Add(this.label1);
             this.panel2.Controls.Add(this.textBox4);
-            this.panel2.Location = new System.Drawing.Point(267, 12);
+            this.panel2.Location = new System.Drawing.Point(253, -1);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(586, 405);
+            this.panel2.Size = new System.Drawing.Size(533, 373);
             this.panel2.TabIndex = 1;
             // 
             // label2
             // 
             this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(531, 369);
+            this.label2.Location = new System.Drawing.Point(478, 337);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(35, 16);
             this.label2.TabIndex = 2;
@@ -218,7 +218,7 @@
             // 
             this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(285, 337);
+            this.label1.Location = new System.Drawing.Point(232, 305);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(281, 32);
             this.label1.TabIndex = 1;
@@ -233,7 +233,7 @@
             this.textBox4.Multiline = true;
             this.textBox4.Name = "textBox4";
             this.textBox4.ReadOnly = true;
-            this.textBox4.Size = new System.Drawing.Size(547, 110);
+            this.textBox4.Size = new System.Drawing.Size(494, 110);
             this.textBox4.TabIndex = 0;
             this.textBox4.Text = "Приложения для синтаксического \r\nанализатора для получения данных с сайта госзаку" +
     "пок\r\n";
@@ -243,10 +243,11 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(860, 429);
+            this.ClientSize = new System.Drawing.Size(782, 372);
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.tabControl1);
             this.Controls.Add(this.panel1);
+            this.MinimumSize = new System.Drawing.Size(592, 294);
             this.Name = "FormMain";
             this.Text = "FormMain";
             this.panel1.ResumeLayout(false);
