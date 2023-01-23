@@ -46,6 +46,16 @@ namespace ZakupAnaliser
             dateTimePicker2.MaxDate = DateTime.Today.AddDays(0);
         }
 
+        protected override void OnResizeBegin(EventArgs e)
+        {
+            SuspendLayout();
+            base.OnResizeBegin(e);
+        }
+        protected override void OnResizeEnd(EventArgs e)
+        {
+            ResumeLayout();
+            base.OnResizeEnd(e);
+        }
         private void button1_Click(object sender, EventArgs e)
         {
             DataApp.region = comboBox1.Text;

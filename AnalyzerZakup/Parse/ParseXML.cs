@@ -39,7 +39,7 @@ namespace AnalyzerZakup
             foreach (string file in fileEntriesProtocol) 
             {
                 //MessageBox.Show(file + "");
-                //parseProtocol.Parse_Protocol(file);
+                parseProtocol.Parse_Protocol2(file);
             }
 
             // Parse Contract

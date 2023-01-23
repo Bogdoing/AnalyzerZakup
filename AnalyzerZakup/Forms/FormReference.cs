@@ -24,6 +24,16 @@ namespace AnalyzerZakup.Forms
             contentTable = content;
         }
 
+        protected override void OnResizeBegin(EventArgs e)
+        {
+            SuspendLayout();
+            base.OnResizeBegin(e);
+        }
+        protected override void OnResizeEnd(EventArgs e)
+        {
+            ResumeLayout();
+            base.OnResizeEnd(e);
+        }
         private void FormReference_Load(object sender, EventArgs e)
         {
             textBox1.Text = contentTable;

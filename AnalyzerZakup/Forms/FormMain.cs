@@ -175,6 +175,16 @@ insert into dataXml (fileXml, typeXml)
 ";
         }
 
+        protected override void OnResizeBegin(EventArgs e)
+        {
+            SuspendLayout();
+            base.OnResizeBegin(e);
+        }
+        protected override void OnResizeEnd(EventArgs e)
+        {
+            ResumeLayout();
+            base.OnResizeEnd(e);
+        }
         private void button1_Click(object sender, EventArgs e)
         {
             Form1 form1= new Form1();  

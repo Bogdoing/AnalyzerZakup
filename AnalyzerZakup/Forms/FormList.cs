@@ -20,14 +20,11 @@ namespace AnalyzerZakup
     public partial class FormList : Form
     {
         private readonly string connectionString = DataApp.TxtBoxFileDB;
-                //"Data Source=DESKTOP-432U1GM\\SQLEXPRESS;Initial Catalog=AnalizeXML;Integrated Security=True;MultipleActiveResultSets=True;"; //AnalizeXML
-
+                
         public FormList()
         {
-            InitializeComponent();
-            
+            InitializeComponent();            
         }
-
         protected override void OnResizeBegin(EventArgs e)
         {
             SuspendLayout();
@@ -40,21 +37,17 @@ namespace AnalyzerZakup
         }
 
         private void FormList_Load(object sender, EventArgs e)
-        {
-            string query_all = @"select * from commissionMember";
-            query_all = @"select
-	                    p.fullName as 'Полное наименование', 
-	                    pr.commissionName as 'Название комиссии', 
-	                    a.finalPrice as 'Цена',  
-	                    a.appDT as 'Дата сделки', 
-	                    c.docPublishDTInEIS as 'Дата публикации документа',  
-	                    p.INN, p.KPP, 
-	                    p.factAddress as 'Фактический адрес', 
-	                    c.purchaseNumber as 'Номер документа', 
-	                    c.docNumber as 'Вид документа', 
-	                    p.regNum as 'Рег. номер'
-                    from applicationInfo a, commonInfo c, protocolPublisherInfo p, protocolInfo pr
-                    where c.id = a.id and c.id = p.id and c.id = pr.id";
+        {            
+            string query_all = 
+                @"select document.id as 'Номер документа',  typeDocument.nameType as 'Тип', document.name as 'Название документа',
+		            tag.tag as 'Тэг', documentTag.value as 'Значение', document.fileXml as 'xml'
+                from documentTag, document, tag, typeDocument, typeDocumentTag
+                where 
+	              documentTag.documentId = document.id and
+	              documentTag.tagId = tag.id  and 
+	              typeDocument.id = document.typeDocumentId and
+	              typeDocument.id = typeDocumentTag.typeDocumentId and
+	              tag.id = typeDocumentTag.tagId;";
             try
             {
                 using (SqlConnection connection = new SqlConnection(connectionString))
@@ -72,18 +65,9 @@ namespace AnalyzerZakup
             }
             catch (Exception ex) { MessageBox.Show(ex.Message, "error", MessageBoxButtons.OK, MessageBoxIcon.Information); }
 
-            string query_cmb_d1 = @"select distinct(rtrim(appDT)) as appDT
-                            from applicationInfo  union all (select '' as appDT) 
-                            order by appDT";
-            string query_cmb_d2 = @"select distinct(rtrim(docPublishDTInEIS)) as docPublishDTInEIS 
-                            from commonInfo union all (select '' as docPublishDTInEIS) 
-                            order by docPublishDTInEIS";
-            string query_cmb_d3 = @"select distinct(rtrim(docNumber)) as docNumber
-                            from commonInfo  union all (select '' as docNumber) 
-                            order by docNumber";
-            string query_cmb_d4 = @"select distinct(typeXml) from dataXml
-                            union all (select '' as typeXml)
-                            order by typeXml";
+            string query_cmb_d1 = @"SELECT nameType from typeDocument union all (select '' as nameType) 
+                            order by nameType";
+
             try
             {
                 using (SqlConnection connection = new SqlConnection(connectionString))
@@ -93,95 +77,44 @@ namespace AnalyzerZakup
                     SqlDataAdapter sadapter = new SqlDataAdapter(comm);
                     sadapter.Fill(stable);
                     comboBox1.DataSource = stable;
-                    comboBox1.DisplayMember = "appDT";
+                    comboBox1.DisplayMember = "nameType";
                     //comboBox1.ValueMember = "id";
                     connection.Close();
                 }
                 
             }
-            catch (Exception ex) { MessageBox.Show(ex.Message, "error", MessageBoxButtons.OK, MessageBoxIcon.Information); }
-            try
-            {
-                using (SqlConnection connection = new SqlConnection(connectionString))
-                {
-                    SqlCommand comm = new SqlCommand(query_cmb_d2, connection);
-                    DataTable stable = new DataTable();
-                    SqlDataAdapter sadapter = new SqlDataAdapter(comm);
-                    sadapter.Fill(stable);
-                    comboBox2.DataSource = stable;
-                    comboBox2.DisplayMember = "docPublishDTInEIS";
-                    //comboBox2.ValueMember = "id";
-                    connection.Close();
-                }
-
-            }
-            catch (Exception ex) { MessageBox.Show(ex.Message, "error", MessageBoxButtons.OK, MessageBoxIcon.Information); }
-
-            try
-            {
-                using (SqlConnection connection = new SqlConnection(connectionString))
-                {
-                    SqlCommand comm = new SqlCommand(query_cmb_d3, connection);
-                    DataTable stable = new DataTable();
-                    SqlDataAdapter sadapter = new SqlDataAdapter(comm);
-                    sadapter.Fill(stable);
-                    comboBox3.DataSource = stable;
-                    comboBox3.DisplayMember = "docNumber";
-                    //comboBox3.ValueMember = "id";
-                    connection.Close();
-                }
-
-            }
-            catch (Exception ex) { MessageBox.Show(ex.Message, "error", MessageBoxButtons.OK, MessageBoxIcon.Information); }
-
-            try
-            {
-                using (SqlConnection connection = new SqlConnection(connectionString))
-                {
-                    SqlCommand comm = new SqlCommand(query_cmb_d4, connection);
-                    DataTable stable = new DataTable();
-                    SqlDataAdapter sadapter = new SqlDataAdapter(comm);
-                    sadapter.Fill(stable);
-                    comboBox4.DataSource = stable;
-                    comboBox4.DisplayMember = "typeXml";
-                    //comboBox3.ValueMember = "id";
-                    connection.Close();
-                }
-
-            }
-            catch (Exception ex) { MessageBox.Show(ex.Message, "error", MessageBoxButtons.OK, MessageBoxIcon.Information); }
-
+            catch (Exception ex) { MessageBox.Show(ex.Message, "error", MessageBoxButtons.OK, MessageBoxIcon.Information); }            
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
-            string query_xml_serializ = @"select fileXml from dataXml";
-            try
-            {
-                using (SqlConnection connection = new SqlConnection(connectionString))
-                {
-                    SqlCommand command = new SqlCommand(query_xml_serializ, connection);
-                    SqlDataReader reader = command.ExecuteReader();
+            //string query_xml_serializ = @"select fileXml from dataXml";
+            //try
+            //{
+            //    using (SqlConnection connection = new SqlConnection(connectionString))
+            //    {
+            //        SqlCommand command = new SqlCommand(query_xml_serializ, connection);
+            //        SqlDataReader reader = command.ExecuteReader();
 
-                    if (reader.HasRows) // если есть данные
-                    {
-                        // выводим названия столбцов
-                        Console.WriteLine("{0}\t{1}\t{2}", reader.GetName(0), reader.GetName(1), reader.GetName(2));
+            //        if (reader.HasRows) // если есть данные
+            //        {
+            //            // выводим названия столбцов
+            //            Console.WriteLine("{0}\t{1}\t{2}", reader.GetName(0), reader.GetName(1), reader.GetName(2));
 
-                        while (reader.Read()) // построчно считываем данные
-                        {
-                            object id = reader.GetValue(0);
-                            object name = reader.GetValue(1);
-                            object age = reader.GetValue(2);
+            //            while (reader.Read()) // построчно считываем данные
+            //            {
+            //                object id = reader.GetValue(0);
+            //                object name = reader.GetValue(1);
+            //                object age = reader.GetValue(2);
 
-                            Console.WriteLine("{0} \t{1} \t{2}", id, name, age);
-                        }
-                    }
-                    reader.Close();
-                }
+            //                Console.WriteLine("{0} \t{1} \t{2}", id, name, age);
+            //            }
+            //        }
+            //        reader.Close();
+            //    }
 
-            }
-            catch (Exception ex) { MessageBox.Show(ex.Message, "error", MessageBoxButtons.OK, MessageBoxIcon.Information); }
+            //}
+            //catch (Exception ex) { MessageBox.Show(ex.Message, "error", MessageBoxButtons.OK, MessageBoxIcon.Information); }
             //FormSerialization fromSerializatio = new FormSerialization(); //fname
 
             //fromSerializatio.ShowDialog();

@@ -224,8 +224,7 @@ namespace AnalyzerZakup.Parse
 
             }
             catch (Exception ex) { MessageBox.Show(ex.Message, "error parse contract", MessageBoxButtons.OK, MessageBoxIcon.Information); }
-        }
-
+        }        
     }
 }
 

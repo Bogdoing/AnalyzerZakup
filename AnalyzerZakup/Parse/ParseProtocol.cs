@@ -17,6 +17,8 @@ namespace AnalyzerZakup.Parse
         private readonly string connectionString = DataApp.TxtBoxFileDB;
         #region PARSEFILE
         Search search = new Search();
+        DataXML dataXML = new DataXML();
+        СheckType сheckType = new СheckType();
         public void Parse_Protocol(string fileEntries)
         {
             XmlDocument docXML = new XmlDocument(); // XML-документ
@@ -374,5 +376,297 @@ namespace AnalyzerZakup.Parse
             }
         }
         #endregion
+
+        public void Parse_Protocol2(string fileEntries)
+        {
+            XmlDocument docXML = new XmlDocument(); // XML-документ
+            docXML.Load(fileEntries); // загрузить XML           
+
+            XmlNamespaceManager _namespaceManager = new XmlNamespaceManager(docXML.NameTable);
+            _namespaceManager.AddNamespace("ns", "http://zakupki.gov.ru/oos/types/1");
+            _namespaceManager.AddNamespace("ns2", "http://zakupki.gov.ru/oos/export/1");
+            _namespaceManager.AddNamespace("ns4", "http://zakupki.gov.ru/oos/base/1");
+            _namespaceManager.AddNamespace("ns3", "http://zakupki.gov.ru/oos/common/1");
+            _namespaceManager.AddNamespace("ns6", "http://zakupki.gov.ru/oos/KOTypes/1");
+            _namespaceManager.AddNamespace("ns5", "http://zakupki.gov.ru/oos/TPtypes/1");
+            _namespaceManager.AddNamespace("ns8", "http://zakupki.gov.ru/oos/pprf615types/1");
+            _namespaceManager.AddNamespace("ns7", "http://zakupki.gov.ru/oos/CPtypes/1");
+            _namespaceManager.AddNamespace("ns13", "http://zakupki.gov.ru/oos/printform/1");
+            _namespaceManager.AddNamespace("ns9", "http://zakupki.gov.ru/oos/EPtypes/1");
+            _namespaceManager.AddNamespace("ns12", "http://zakupki.gov.ru/oos/EATypes/1");
+            _namespaceManager.AddNamespace("ns11", "http://zakupki.gov.ru/oos/URTypes/1");
+            _namespaceManager.AddNamespace("ns10", "http://zakupki.gov.ru/oos/SMTypes/1");
+            _namespaceManager.AddNamespace("ns14", "http://zakupki.gov.ru/oos/control99/1");
+
+            try
+            {
+                dataXML.id = int.Parse(docXML.DocumentElement.SelectNodes(
+                    "//ns9:id",
+                    _namespaceManager)[0]
+                    .InnerText);
+
+                dataXML.fileXml = fileEntries;
+
+                try
+                {
+                    string[] NameFilestrList = dataXML.fileXml.Split('\\');
+                    string NameFilestr = NameFilestrList[NameFilestrList.Length - 1];
+                    dataXML.fileType = NameFilestr.Split('_')[0]; // fileType
+
+                    List<string> dbFileType = сheckType.setNameTypeDB();
+                    if (сheckType.checkTypeName(dataXML.fileType, dbFileType) == false)
+                    {
+                        string query_insert = @"INSERT into typeDocument(nameType) VALUES(@nameType)";
+                        try
+                        {
+                            using (SqlConnection connection = new SqlConnection(connectionString))
+                            {
+                                SqlCommand command = new SqlCommand(query_insert, connection);
+                                command.Connection.Open();
+                                command.Parameters.AddWithValue("@nameType", dataXML.fileType);
+                                int result = command.ExecuteNonQuery();
+                                if (result < 0) MessageBox.Show("Ошибка добавления строки в базу данных INSERT nameType! " + result.ToString());
+                            }
+                            query_insert = @"insert into typeDocumentTag (typeDocumentId, tagId) values (@typeDocumentId, 24)";
+                            using (SqlConnection connection = new SqlConnection(connectionString))
+                            {
+                                SqlCommand command = new SqlCommand(query_insert, connection);
+                                command.Connection.Open();
+                                command.Parameters.AddWithValue("@typeDocumentId", сheckType.setTypeIDdb());
+                                int result = command.ExecuteNonQuery();
+                                if (result < 0) MessageBox.Show("Ошибка добавления строки в базу данных INSERT typeDocumentTag! " + result.ToString());
+                            }
+                        }
+                        catch (Exception ex) { MessageBox.Show(ex.Message, "error db INSERT nameType", MessageBoxButtons.OK, MessageBoxIcon.Information); }
+                    }
+
+                    string query_getTypeName = @"Select id from typeDocument where nameType = '" + dataXML.fileType + "'";
+                    string fileTypeId = "";
+                    try
+                    {
+                        using (SqlConnection connection = new SqlConnection(connectionString))
+                        {
+                            SqlCommand command = new SqlCommand(query_getTypeName, connection);
+                            command.Connection.Open();
+                            fileTypeId = command.ExecuteScalar().ToString();
+                        }
+                    }
+                    catch (Exception ex) { MessageBox.Show(ex.Message, "error db Select nameType", MessageBoxButtons.OK, MessageBoxIcon.Information); }
+
+                    string[] test = dataXML.fileXml.Split('\\');
+                    dataXML.nameFile = test[test.Length - 1]; // @name
+
+                    string query = @"DECLARE @fileX xml;
+                    SELECT @fileX = (SELECT * FROM OPENROWSET(BULK '" + dataXML.fileXml + "', SINGLE_BLOB) as [xml])" +
+                        "insert into document(name, fileXml, typeDocumentId)" +
+                        "values" +
+                        "(@name, @fileX, @typeDocumentId)";
+                    string query_Value = @"insert into documentTag (documentId, tagId, value) 
+                            values 
+                            (@documentId, @tagId, @value)";
+                    List<string> dbFilename = search.SearchDB();
+                    if (search.FiendList(dataXML.nameFile, dbFilename))
+                    {
+                        try
+                        {
+                            using (SqlConnection connection = new SqlConnection(connectionString))
+                            {
+                                SqlCommand command = new SqlCommand(query, connection);
+                                command.Connection.Open();
+                                command.Parameters.AddWithValue("@name", dataXML.nameFile);
+                                command.Parameters.AddWithValue("@typeDocumentId", fileTypeId);
+
+                                int result = command.ExecuteNonQuery();
+                                if (result < 0) MessageBox.Show("Ошибка добавления строки в базу данных OPENROWSET! " + result.ToString());
+                            }
+                        }
+                        catch (Exception ex) { MessageBox.Show(ex.Message, "error db insert into documen", MessageBoxButtons.OK, MessageBoxIcon.Information); }
+
+                        #region Parse
+                        ProtocolInfo protocolInfo = new ProtocolInfo();
+                        CommonInfo common_Info = new CommonInfo();
+                        ProtocolPublisherInfo protocolPublisherInfo = new ProtocolPublisherInfo();
+                        CommissionMembers commissionMembers = new CommissionMembers();
+                        ApplicationInfo applicationInfo = new ApplicationInfo();
+
+                        var cnt_commissionname = docXML.DocumentElement.SelectNodes(
+                            "//ns9:commissionInfo/ns3:commissionName",
+                            _namespaceManager).Count;
+                        if (cnt_commissionname != 0)
+                            protocolInfo.commissionName = docXML.DocumentElement.SelectNodes(
+                            "//ns9:commissionInfo/ns3:commissionName",
+                            _namespaceManager)[0]
+                            .InnerText;
+                        else protocolInfo.commissionName = "Не определена";
+                        //
+                        common_Info.commonInfo_purchaseNumber = docXML.DocumentElement.SelectNodes(
+                            "//ns9:commonInfo/ns9:purchaseNumber",
+                            _namespaceManager)[0]
+                            .InnerText;
+
+                        common_Info.commonInfo_docNumber = docXML.DocumentElement.SelectNodes(
+                            "//ns9:commonInfo/ns9:docNumber",
+                            _namespaceManager)[0]
+                            .InnerText;
+
+                        common_Info.commonInfo_publishDTInEIS = docXML.DocumentElement.SelectNodes(
+                            "//ns9:commonInfo/ns9:publishDTInEIS",
+                            _namespaceManager)[0]
+                            .InnerText;
+                        //
+                        protocolPublisherInfo.protocol_regNum = docXML.DocumentElement.SelectNodes(
+                            "//ns9:protocolPublisherInfo/ns9:publisherOrg/ns9:regNum",
+                            _namespaceManager)[0]
+                            .InnerText;
+                        protocolPublisherInfo.protocol_fullName = docXML.DocumentElement.SelectNodes(
+                            "//ns9:protocolPublisherInfo/ns9:publisherOrg/ns9:fullName",
+                            _namespaceManager)[0]
+                            .InnerText;
+                        protocolPublisherInfo.protocol_factAddress = docXML.DocumentElement.SelectNodes(
+                            "//ns9:protocolPublisherInfo/ns9:publisherOrg/ns9:factAddress",
+                            _namespaceManager)[0]
+                            .InnerText;
+                        protocolPublisherInfo.protocol_INN = docXML.DocumentElement.SelectNodes(
+                            "//ns9:protocolPublisherInfo/ns9:publisherOrg/ns9:INN",
+                            _namespaceManager)[0]
+                            .InnerText;
+                        protocolPublisherInfo.protocol_KPP = docXML.DocumentElement.SelectNodes(
+                            "//ns9:protocolPublisherInfo/ns9:publisherOrg/ns9:KPP",
+                            _namespaceManager)[0]
+                            .InnerText;
+                        //
+                        var cnt_appNumber = docXML.DocumentElement.SelectNodes(
+                            "//ns9:applicationsInfo/ns9:applicationInfo/ns9:commonInfo/ns9:appNumber",
+                            _namespaceManager)
+                            .Count;
+                        //MessageBox.Show(cnt_appNumber);
+                        if (cnt_appNumber != 0)
+                        {
+                            applicationInfo.applicationInfo_appNumber = docXML.DocumentElement.SelectNodes(
+                                    "//ns9:applicationsInfo/ns9:applicationInfo/ns9:commonInfo/ns9:appNumber",
+                                    _namespaceManager)[cnt_appNumber - 1]
+                                    .InnerText;
+                            applicationInfo.applicationInfo_appDT = docXML.DocumentElement.SelectNodes(
+                                    "//ns9:applicationsInfo/ns9:applicationInfo/ns9:commonInfo/ns9:appDT",
+                                    _namespaceManager)[0]
+                                    .InnerText;
+
+                            var cnt_final_Prise = docXML.DocumentElement.SelectNodes(
+                                    "//ns9:applicationsInfo/ns9:applicationInfo/ns9:finalPrice",
+                                    _namespaceManager)
+                                    .Count.ToString();
+                            if (cnt_final_Prise == "0")
+                            {
+                                applicationInfo.applicationInfo_finalPrice = "0.0";
+                            }
+                            else
+                            {
+                                applicationInfo.applicationInfo_finalPrice = docXML.DocumentElement.SelectNodes(
+                                    "//ns9:applicationsInfo/ns9:applicationInfo/ns9:finalPrice",
+                                    _namespaceManager)[int.Parse(cnt_final_Prise) - 1]
+                                    .InnerText;
+                            }
+                        }
+                        else
+                        {
+                            MessageBox.Show("ELSE appNumber");
+                            applicationInfo.applicationInfo_appNumber = "0";
+                            applicationInfo.applicationInfo_finalPrice = "0.0";
+                            applicationInfo.applicationInfo_appDT = "01.01.1999 0:00:00"; //"01.01.2000 0:00:00"
+                        }
+
+                        var commissionMember = docXML.DocumentElement.SelectNodes(
+                            "//ns3:commissionMembers/ns3:commissionMember",
+                            _namespaceManager)
+                            .Count.ToString();
+
+
+                        addDB(fileEntries, dataXML.id.ToString(), 24);
+                        addDB(fileEntries, protocolInfo.commissionName.ToString(), 6);
+                        addDB(fileEntries, common_Info.commonInfo_purchaseNumber.ToString(), 12);
+                        addDB(fileEntries, common_Info.commonInfo_publishDTInEIS.ToString(), 14);
+                        addDB(fileEntries, protocolPublisherInfo.protocol_regNum.ToString(), 11);
+                        addDB(fileEntries, protocolPublisherInfo.protocol_fullName.ToString(), 7);
+                        addDB(fileEntries, protocolPublisherInfo.protocol_factAddress.ToString(), 8);
+                        addDB(fileEntries, protocolPublisherInfo.protocol_INN.ToString(), 9);
+                        addDB(fileEntries, protocolPublisherInfo.protocol_KPP.ToString(), 10);
+                        addDB(fileEntries, applicationInfo.applicationInfo_appNumber.ToString(), 18);
+                        addDB(fileEntries, applicationInfo.applicationInfo_appDT.ToString(), 19);
+                        addDB(fileEntries, applicationInfo.applicationInfo_finalPrice.ToString(), 20);
+
+                        #endregion
+                    }
+                    else { MessageBox.Show("db have fhis file - " + fileEntries); }
+                }
+                catch (Exception ex) { MessageBox.Show(ex.Message, "error db all", MessageBoxButtons.OK, MessageBoxIcon.Information); }
+
+            }
+            catch (Exception ex) { MessageBox.Show(ex.Message, "error parse contract", MessageBoxButtons.OK, MessageBoxIcon.Information); }
+        }
+
+
+        private void addDB(string fileEntries, string value, int tagId)
+        {
+            string query_getTypeName = @"Select id from typeDocument where nameType = '" + dataXML.fileType + "'";
+            string fileTypeId = "";
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    SqlCommand command = new SqlCommand(query_getTypeName, connection);
+                    command.Connection.Open();
+                    fileTypeId = command.ExecuteScalar().ToString();
+                    //MessageBox.Show(fileTypeId + " * fileTypeId");
+                }
+            }
+            catch (Exception ex) { MessageBox.Show(ex.Message, "error db Select nameType addDB", MessageBoxButtons.OK, MessageBoxIcon.Information); }
+
+            string query = @"DECLARE @fileX xml;
+                    SELECT @fileX = (SELECT * FROM OPENROWSET(BULK '" + dataXML.fileXml + "', SINGLE_BLOB) as [xml])" +
+                        "insert into document(name, fileXml, typeDocumentId)" +
+                        "values" +
+                        "(@name, @fileX, @typeDocumentId)";
+            string query_Value = @"insert into documentTag (documentId, tagId, value) 
+                            values 
+                            (@documentId, @tagId, @value)";
+
+            List<string> dbFilename = search.SearchDB();
+            if (search.FiendList(dataXML.nameFile, dbFilename))
+            {
+                try
+                {
+                    using (SqlConnection connection = new SqlConnection(connectionString))
+                    {
+                        SqlCommand command = new SqlCommand(query, connection);
+                        command.Connection.Open();
+                        command.Parameters.AddWithValue("@name", dataXML.nameFile);
+                        command.Parameters.AddWithValue("@typeDocumentId", 1);
+
+                        int result = command.ExecuteNonQuery();
+                        if (result < 0) MessageBox.Show("Ошибка добавления строки в базу данных OPENROWSET addDB! " + result.ToString());
+                    }
+                }
+                catch (Exception ex) { MessageBox.Show(ex.Message, "addDB error db insert into documen", MessageBoxButtons.OK, MessageBoxIcon.Information); }
+                //MessageBox.Show("test db insert value");
+                try
+                {
+                    using (SqlConnection connection = new SqlConnection(connectionString))
+                    {
+                        //MessageBox.Show(сheckType.setDocumentIBdb() + " - сheckType.setDocumentIBdb() - /  " + value);
+                        SqlCommand command = new SqlCommand(query_Value, connection);
+                        command.Connection.Open();
+                        command.Parameters.AddWithValue("@documentId", 1); //int.Parse(сheckType.setDocumentIBdb())
+                        command.Parameters.AddWithValue("@tagId", tagId);
+                        command.Parameters.AddWithValue("@value", value);
+                        int result = command.ExecuteNonQuery();
+                        if (result < 0) MessageBox.Show("addDB Ошибка добавления строки в базу данных OPENROWSET! " + result.ToString());
+                    }
+                }
+                catch (Exception ex) { MessageBox.Show(ex.Message, "addDB error db insert into documen", MessageBoxButtons.OK, MessageBoxIcon.Information); }
+
+            }
+            else { MessageBox.Show("addDB db have fhis file - " + fileEntries); }
+
+        }
     }
 }
