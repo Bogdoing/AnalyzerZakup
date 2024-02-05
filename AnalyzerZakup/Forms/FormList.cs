@@ -52,10 +52,22 @@ namespace AnalyzerZakup
             {
                 using (SqlConnection connection = new SqlConnection(connectionString))
                 {
+                    MessageBox.Show(connection + "", "connection", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
                     SqlCommand comm = new SqlCommand(query_all, connection);
+                    MessageBox.Show(comm + "", "comm", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
                     DataTable table = new DataTable();
+                    
                     SqlDataAdapter adapter = new SqlDataAdapter(comm);
+                    MessageBox.Show(adapter.ToString() , "adapter", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    
                     adapter.Fill(table);
+
+
+                    if (adapter == null) { MessageBox.Show("conn eror", "conn eror", MessageBoxButtons.OK, MessageBoxIcon.Information); }
+                    
+                    
                     dataGridView1.DataSource = table;
                     dataGridView1.Columns[0].Visible = true;
                     dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
@@ -324,32 +336,5 @@ between '" + comboBox1.Text + "' and '" + comboBox2.Text + "' and c.docPublishDT
             }
             catch (Exception ex) { MessageBox.Show(ex.Message, "using error", MessageBoxButtons.OK, MessageBoxIcon.Information); }
         }
-
-        //public`void TestRead()
-        //{
-
-        //    OleDbConnection conn = new OleDbConnection(conn);
-        //    OleDbCommand myCommand = new OleDbCommand();
-        //    myCommand.Connection = conn;
-        //    myCommand.CommandText = commandText;
-        //    OleDbDataAdapter dataAdapter = new OleDbDataAdapter();
-        //    dataAdapter.SelectCommand = myCommand;
-        //    DataSet ds = new DataSet();
-
-        //    dataAdapter.TableMappings.Add("Table", "TOUR");
-
-        //    OleDbCommand myCommand2 = new OleDbCommand();
-        //    myCommand2.Connection = conn;
-        //    myCommand2.CommandText = commandText2;
-        //    OleDbDataAdapter dataAdapter2 = new OleDbDataAdapter();
-        //    dataAdapter2.SelectCommand = myCommand2;
-        //    dataAdapter2.TableMappings.Add("Table", "SEASON");
-
-        //    conn.Open();
-        //    dataAdapter.Fill(ds);
-        //    dataAdapter2.Fill(ds);
-        //    conn.Close();
-        //    dataGrid1.DataSource = ds;
-        //}
     }
 }

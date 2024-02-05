@@ -91,7 +91,7 @@
             this.textBox_filepath.Name = "textBox_filepath";
             this.textBox_filepath.Size = new System.Drawing.Size(348, 22);
             this.textBox_filepath.TabIndex = 1;
-            this.textBox_filepath.Text = "D:\\files\\CODE\\C#\\Cours3_1\\CouksMakovii\\up\\";
+            this.textBox_filepath.Text = "D:\\FILES\\CODE\\C#\\AnalyzerZakup\\DATA\\";
             // 
             // label1
             // 

@@ -9,8 +9,10 @@ namespace AnalyzerZakup.Data
 {
     internal class DB
     {
-        public const string connectionString =
-            @"Data Source=DESKTOP-432U1GM\\SQLEXPRESS;Initial Catalog=AnalizeXML;Integrated Security=True;MultipleActiveResultSets=True;"; //AnalizeXML
+        //public const string connectionString =
+        //    @"Data Source=DESKTOP-432U1GM\\SQLEXPRESS;Initial Catalog=AnalizeXML;Integrated Security=True;MultipleActiveResultSets=True;"; //AnalizeXML
+        public const string connectionString = @"Data Source=Bogdoing\SQLEXPRESS;Initial Catalog=AnalizeXML;Integrated Security=True;MultipleActiveResultSets=True;";
+
         private SqlConnection connection;
 
         public DB()
@@ -30,18 +32,5 @@ namespace AnalyzerZakup.Data
             if (connection != null)
                 connection.Close();
         }
-        /*
-         public IEnumerable<Article> GetAll()
-        {
-            var sql = @"SELECT [Id], [Uid], [Title], [Text] FROM [dbo].[Articles]";
-
-            using var factory = new Db();
-            using var connection = factory.GetConnection();
-
-            var result = connection.Query<Article>(sql).ToList();
-
-            return result;
-        }
-         */
     }
 }

@@ -2,12 +2,14 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Data.SqlClient;
 using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using ZakupAnaliser;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace AnalyzerZakup.Forms
 {
@@ -218,6 +220,36 @@ insert into dataXml (fileXml, typeXml)
 				tabControl1.Visible = true; 
 				panel2.Visible = false;
 			}
+        }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+            string connectionString = DataApp.TxtBoxFileDB;
+
+            string query_all =
+                @"select document.id as 'Номер документа',  typeDocument.nameType as 'Тип', document.name as 'Название документа',
+		        tag.tag as 'Тэг', documentTag.value as 'Значение', document.fileXml as 'xml'
+            from documentTag, document, tag, typeDocument, typeDocumentTag
+            where 
+	            documentTag.documentId = document.id and
+	            documentTag.tagId = tag.id  and 
+	            typeDocument.id = document.typeDocumentId and
+	            typeDocument.id = typeDocumentTag.typeDocumentId and
+	            tag.id = typeDocumentTag.tagId;";
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    SqlCommand comm = new SqlCommand(query_all, connection);
+                    DataTable table = new DataTable();
+                    SqlDataAdapter adapter = new SqlDataAdapter(comm);
+                    
+                    connection.Close();
+                    MessageBox.Show(table + "", "OK", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+            }
+            catch (Exception ex) { MessageBox.Show(ex.Message, "error", MessageBoxButtons.OK, MessageBoxIcon.Information); }
+
         }
     }
 }
