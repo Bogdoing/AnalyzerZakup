@@ -1,13 +1,16 @@
 # AnalyzerZakup
 
-A parser for obtaining data from the public procurement website
-
-<hr/>
+A parser for obtaining data from the public procurement website.
 
 ## Instructions for installing libraries
-Go to the zip folder and unzip Liberis
-Move the dll and xml files to the path: ~/AnalyzerZakup/bin/Debug/
+Go to the zip folder and unzip Liberis.
 
-<hr/>
+Move the dll and xml files to the path: <b> ~/AnalyzerZakup/bin/Debug/ </b>
 
-<a href="SQL_Script.md">SQL_Script</a>
+Files:
+ * BytesRoad.Net.Ftp.dll
+ * BytesRoad.Net.Sockets.dll
+ * Npgsql.dll
+ * Npgsql.xml
+
+<b> <a href="SQL_Script.md">Instructions for creating a database(SQL_Script)</a> </b>
