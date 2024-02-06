@@ -1,4 +1,3 @@
-
 # Create a database
 
 <code> 
@@ -103,8 +102,6 @@ insert into typeDocumentTag (typeDocumentId, tagId)
 	(2, 21),
 	(2, 22),
 	(2, 23)	
-
-<hr>
 
 # Script for DB
 
