@@ -596,7 +596,7 @@ namespace AnalyzerZakup.Parse
 
                         #endregion
                     }
-                    else { MessageBox.Show("db have fhis file - " + fileEntries); }
+                    else { /*MessageBox.Show("db have fhis file - " + fileEntries);*/ }
                 }
                 catch (Exception ex) { MessageBox.Show(ex.Message, "error db all", MessageBoxButtons.OK, MessageBoxIcon.Information); }
 
@@ -665,7 +665,7 @@ namespace AnalyzerZakup.Parse
                 catch (Exception ex) { MessageBox.Show(ex.Message, "addDB error db insert into documen", MessageBoxButtons.OK, MessageBoxIcon.Information); }
 
             }
-            else { MessageBox.Show("addDB db have fhis file - " + fileEntries); }
+            else { /*MessageBox.Show("addDB db have fhis file - " + fileEntries);*/ }
 
         }
     }

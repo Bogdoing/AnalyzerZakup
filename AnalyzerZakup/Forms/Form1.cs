@@ -120,8 +120,6 @@ namespace ZakupAnaliser
             UpZip.delFile();
         }
 
-        /**/
-        /**/
     }
     /*  */
 
