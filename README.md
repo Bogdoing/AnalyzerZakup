@@ -10,6 +10,8 @@ Move the dll and xml files to the path: ~/AnalyzerZakup/bin/Debug/
 
 <hr/>
 
+<a href="SQL_Script.md">SQL_Script</a>
+
 # Create a database
 
 <code> 
