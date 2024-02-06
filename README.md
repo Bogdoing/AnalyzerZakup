@@ -13,4 +13,6 @@ Files:
  * Npgsql.dll
  * Npgsql.xml
 
+## Database Installation Instructions
+
 <b> <a href="SQL_Script.md">Instructions for creating a database(SQL_Script)</a> </b>
