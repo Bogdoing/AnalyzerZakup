@@ -103,7 +103,11 @@ insert into typeDocumentTag (typeDocumentId, tagId)
 	(2, 22),
 	(2, 23)	
 
+</code>
+
 # Script for DB
+
+<code> 
 
 DECLARE @fileX xml;
 SELECT @fileX  = (SELECT * FROM OPENROWSET (BULK 'C:\Users\nuran\OneDrive\Рабочий стол\david\ProjectC\CouksMakovii\epProtocolEF2020SubmitOffers_0307300044422000172_40052725.xml', SINGLE_BLOB) as [xml])
